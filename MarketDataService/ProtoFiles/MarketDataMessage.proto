@@ -1,0 +1,13 @@
+﻿syntax = "proto3"; 
+option csharp_namespace = "MarketDataService.Messages";
+import "google/protobuf/timestamp.proto";
+
+message MarketDataMessage {
+  string ticker = 1;
+  double bid_px = 2;
+  double ask_px = 3;
+  google.protobuf.Timestamp priceTime = 4;
+  double dividend_yield_pct = 5;
+  double risk_free_rate_pct = 6;
+  double volatility_pct = 7;
+}

@@ -1,0 +1,14 @@
+﻿namespace MarketDataDistributionService.Configs;
+
+public class AppParamsConfiguration
+{
+    public string ZeroMqReceiveHost { get; set; }
+    public int ZeroMqReceivePort { get; set; }
+    public string ZeroMqReceiveTopic { get; set; }
+    public int ReceiveMessageCapacity { get; set; }
+    public string ZeroMqSendHost { get; set; }
+    public int ZeroMqSendPort { get; set; }
+    public string ZeroMqSendTopicPrefix { get; set; }
+    public int SendMessageCapacity { get; set; }
+    public int NumOfThreads { get; set; }
+}
