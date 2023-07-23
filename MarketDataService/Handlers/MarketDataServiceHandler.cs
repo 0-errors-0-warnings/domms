@@ -47,11 +47,11 @@ public class MarketDataServiceHandler : IServiceHandler
         while(!stoppingToken.IsCancellationRequested)
         {
             var marketDataMessage = GetMarketDataMessage();
-            _logger.LogInformation("sending: {Ticker} ", marketDataMessage.Ticker);
+            _logger.LogInformation("sending: {Ticker}, Price:{PriceTime} ", marketDataMessage.Ticker, marketDataMessage.PriceTime);
 
             pubSocket.SendMoreFrame(_appParamsConfiguration.ZeroMqSendTopic).SendFrame(marketDataMessage.ToByteArray());
 
-            //await Task.Delay(10);
+            await Task.Delay(10*1000);
         }
 
         await Task.CompletedTask;

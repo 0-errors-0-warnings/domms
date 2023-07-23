@@ -36,7 +36,6 @@ public class CalcEngineServiceHandler : IServiceHandler
         }
 
         using var runtime = new NetMQRuntime();
-        //runtime.Run(stoppingToken, SubscriberAsync(stoppingToken, _inboundChannel.Writer), PublisherAsync(stoppingToken, _inboundChannel.Reader));
         runtime.Run(stoppingToken,
             SubscriberAsync(stoppingToken,
             _appParamsConfiguration.ZeroMqReceiveHost,
@@ -99,6 +98,9 @@ public class CalcEngineServiceHandler : IServiceHandler
     private async void WriteToInbound(byte[] bytes)
     {
         var msg = ParameterSetUpdateMessage.Parser.ParseFrom(bytes);
+
+        _logger.LogInformation("{Ticker} has {Count} entries", msg.Ticker, msg.ParameterSetList.Count);
+
         await _inboundChannel.Writer.WriteAsync(msg);
     }
 

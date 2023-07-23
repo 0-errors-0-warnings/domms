@@ -39,7 +39,6 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
         }
 
         using var runtime = new NetMQRuntime();
-        //runtime.Run(stoppingToken, SubscriberAsync(stoppingToken, _inboundChannel.Writer), PublisherAsync(stoppingToken, _inboundChannel.Reader));
         runtime.Run(stoppingToken, 
             SubscriberAsync(stoppingToken, 
             _appParamsConfiguration.ZeroMqReceiveHost, 
@@ -93,8 +92,9 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
         while (!stoppingToken.IsCancellationRequested)
         {
             var parameterSetUpdateMessage = await readFromChannel(stoppingToken);
-            _logger.LogInformation("sending: {Ticker} ", parameterSetUpdateMessage.Ticker);
-            pubSocket.SendMoreFrame($"{topicPrefix}{parameterSetUpdateMessage.Ticker}").SendFrame(parameterSetUpdateMessage.ToByteArray());
+            var newTopic = $"{topicPrefix}{parameterSetUpdateMessage.Ticker}_IN";
+            _logger.LogInformation("sending: {Ticker}, PriceTime: {PriceTime}, Topic: {newTopic} ", parameterSetUpdateMessage.Ticker, parameterSetUpdateMessage.PriceTime, newTopic);
+            pubSocket.SendMoreFrame(newTopic).SendFrame(parameterSetUpdateMessage.ToByteArray());
         }
     }
     #endregion 
@@ -124,7 +124,6 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
     private ParameterSetUpdateMessage GetParameterSetUpdateMessage(MarketDataMessage marketDataMessage)
     {
         //TODO: use _parameterSetRangesConfiguration to populate the PSUpdate message
-        //TODO: sample message below
         //TODO: checks to ensure none of the values become -ve
         var msg = new ParameterSetUpdateMessage()
         {
@@ -132,13 +131,61 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
             PriceTime = marketDataMessage.PriceTime,
         };
 
+        var currentSpotPx = (marketDataMessage.BidPx + marketDataMessage.AskPx) / 2.0;
+        var currentVol = marketDataMessage.VolatilityPct / 100.0;
+        var currentRate = marketDataMessage.RiskFreeRatePct / 100.00;
+        var currentDiv = marketDataMessage.DividendYieldPct / 100.00;
+        var currentTime = 1.0;
+
+        // current values should be top of the list
         msg.ParameterSetList.Add(new ParameterSet()
         {
-            DivYield = 0.0,
-            RiskFreeRate = 0.0,
-            SpotPx = 0.0,
-            Time = 0.0
+            SpotPx = currentSpotPx,
+            Volatility = currentVol,
+            RiskFreeRate = currentRate,
+            DivYield = currentDiv,
+            Time = currentTime
         });
+
+        // for is slightly faster than foreach
+        for (var spBpsIndex = 0; spBpsIndex < _parameterSetRangesConfiguration.SpotPricesBps.Count; spBpsIndex++)
+        {
+            var newSpotPx = currentSpotPx + _parameterSetRangesConfiguration.SpotPricesBps[spBpsIndex] / 100.00;
+
+            if (newSpotPx <= 0)
+            {
+                continue;
+            }
+
+            for (var volIndex = 0; volIndex < _parameterSetRangesConfiguration.VolatilityBps.Count; volIndex++)
+            {
+                var newVol = currentVol + _parameterSetRangesConfiguration.VolatilityBps[volIndex] / 10000.00;
+
+                if (newVol <= 0)
+                {
+                    continue;
+                }
+
+                for (var rateIndex = 0; rateIndex < _parameterSetRangesConfiguration.RateBps.Count; rateIndex++)
+                {
+                    var newRate = currentRate + _parameterSetRangesConfiguration.RateBps[rateIndex] / 10000.00;
+
+                    if (newRate <= 0)
+                    {
+                        continue;
+                    }
+
+                    msg.ParameterSetList.Add(new ParameterSet()
+                    {
+                        SpotPx = newSpotPx,
+                        Volatility = newVol,
+                        RiskFreeRate = newRate,
+                        DivYield = currentDiv,
+                        Time = currentTime
+                    });
+                }
+            }
+        }
 
         return msg;
     }
