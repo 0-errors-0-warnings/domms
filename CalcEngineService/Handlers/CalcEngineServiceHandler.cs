@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Options;
-using MarketDataDistributionService.Messages;
+﻿using CalcEngineService.Caches;
+using CalcEngineService.Configs;
 using CalcEngineService.Messages;
+using Google.Protobuf;
+using MarketDataDistributionService.Messages;
+using Microsoft.Extensions.Options;
 using NetMQ;
 using NetMQ.Sockets;
 using System.Threading.Channels;
-using CalcEngineService.Configs;
-using Google.Protobuf;
-using CalcEngineService.Extensions;
 
 namespace CalcEngineService.Handlers;
 
@@ -14,14 +14,19 @@ public class CalcEngineServiceHandler : IServiceHandler
 {
     private readonly ILogger<CalcEngineServiceHandler> _logger;
     private readonly AppParamsConfiguration _appParamsConfiguration;
+    private readonly IParameterSetUpdateCache _parameterSetUpdateCache;
     private Channel<ParameterSetUpdateMessage> _inboundChannel;
     private Channel<ParameterSetMeshUpdateMessage> _outboundChannel;
     private List<Task> _processorTaskList;
 
-    public CalcEngineServiceHandler(ILogger<CalcEngineServiceHandler> logger, IOptions<AppParamsConfiguration> appParamsConfigurationOption)
+    public CalcEngineServiceHandler(ILogger<CalcEngineServiceHandler> logger, 
+        IOptions<AppParamsConfiguration> appParamsConfigurationOption,
+        IParameterSetUpdateCache parameterSetUpdateCache)
     {
         _logger = logger;
         _appParamsConfiguration = appParamsConfigurationOption.Value;
+        _parameterSetUpdateCache = parameterSetUpdateCache;
+
         _inboundChannel = Channel.CreateBounded<ParameterSetUpdateMessage>(_appParamsConfiguration.ReceiveMessageCapacity);
         _outboundChannel = Channel.CreateBounded<ParameterSetMeshUpdateMessage>(_appParamsConfiguration.SendMessageCapacity);
         _processorTaskList = new List<Task>();
@@ -98,9 +103,6 @@ public class CalcEngineServiceHandler : IServiceHandler
     private async void WriteToInbound(byte[] bytes)
     {
         var msg = ParameterSetUpdateMessage.Parser.ParseFrom(bytes);
-
-        _logger.LogInformation("{Ticker} has {Count} entries", msg.Ticker, msg.ParameterSetList.Count);
-
         await _inboundChannel.Writer.WriteAsync(msg);
     }
 
@@ -111,10 +113,11 @@ public class CalcEngineServiceHandler : IServiceHandler
 
     private async void ProcessMarketDataMessage(CancellationToken stoppingToken)
     {
-        // pick the latest message
+        //TODO: pick the latest message
         while (!stoppingToken.IsCancellationRequested)
         {
             var parameterSetUpdateMessage = await _inboundChannel.Reader.ReadAsync(stoppingToken);
+            _parameterSetUpdateCache.UpdateParameterSet(parameterSetUpdateMessage);
             var parameterSetMeshUpdateMessage = GetParameterSetMeshUpdateMessage(parameterSetUpdateMessage);
             await _outboundChannel.Writer.WriteAsync(parameterSetMeshUpdateMessage);
         }

@@ -51,7 +51,8 @@ public class MarketDataServiceHandler : IServiceHandler
 
             pubSocket.SendMoreFrame(_appParamsConfiguration.ZeroMqSendTopic).SendFrame(marketDataMessage.ToByteArray());
 
-            await Task.Delay(10*1000);
+            //TODO: Only for testing. Remove later.
+            await Task.Delay(5*1000, stoppingToken);
         }
 
         await Task.CompletedTask;
@@ -65,10 +66,10 @@ public class MarketDataServiceHandler : IServiceHandler
             Ticker = ticker,
             BidPx = bidPx,
             AskPx = askPx,
-            PriceTime = priceTime.ToTimestamp(),
-            DividendYieldPct = _divYieldGenerator.GetDivYieldPct(),
+            VolatilityPct = _volGenerator.GetVolPct(),
             RiskFreeRatePct = _riskFreeRateGenerator.GetRiskFreeRatePct(),
-            VolatilityPct = _volGenerator.GetVolPct()
+            DividendYieldPct = _divYieldGenerator.GetDivYieldPct(),
+            PriceTime = priceTime.ToTimestamp()
         };
     }
 }

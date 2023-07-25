@@ -1,4 +1,5 @@
 using CalcEngineService;
+using CalcEngineService.Caches;
 using CalcEngineService.Configs;
 using CalcEngineService.Handlers;
 
@@ -14,6 +15,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
         services.Configure<AppParamsConfiguration>(configuration.GetSection("AppParams"));
 
+        services.AddSingleton<IParameterSetUpdateCache, ParameterSetUpdateCache>();
         services.AddSingleton<IServiceHandler, CalcEngineServiceHandler>();
 
         services.AddHostedService<Worker>();

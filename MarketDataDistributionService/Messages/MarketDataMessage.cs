@@ -26,15 +26,15 @@ namespace MarketDataService.Messages {
           string.Concat(
             "ChdNYXJrZXREYXRhTWVzc2FnZS5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3Rp",
             "bWVzdGFtcC5wcm90byLCAQoRTWFya2V0RGF0YU1lc3NhZ2USDgoGdGlja2Vy",
-            "GAEgASgJEg4KBmJpZF9weBgCIAEoARIOCgZhc2tfcHgYAyABKAESLQoJcHJp",
-            "Y2VUaW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIaChJk",
-            "aXZpZGVuZF95aWVsZF9wY3QYBSABKAESGgoScmlza19mcmVlX3JhdGVfcGN0",
-            "GAYgASgBEhYKDnZvbGF0aWxpdHlfcGN0GAcgASgBQh2qAhpNYXJrZXREYXRh",
+            "GAEgASgJEg4KBmJpZF9weBgCIAEoARIOCgZhc2tfcHgYAyABKAESFgoOdm9s",
+            "YXRpbGl0eV9wY3QYBCABKAESGgoScmlza19mcmVlX3JhdGVfcGN0GAUgASgB",
+            "EhoKEmRpdmlkZW5kX3lpZWxkX3BjdBgGIAEoARItCglwcmljZVRpbWUYByAB",
+            "KAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQh2qAhpNYXJrZXREYXRh",
             "U2VydmljZS5NZXNzYWdlc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MarketDataService.Messages.MarketDataMessage), global::MarketDataService.Messages.MarketDataMessage.Parser, new[]{ "Ticker", "BidPx", "AskPx", "PriceTime", "DividendYieldPct", "RiskFreeRatePct", "VolatilityPct" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MarketDataService.Messages.MarketDataMessage), global::MarketDataService.Messages.MarketDataMessage.Parser, new[]{ "Ticker", "BidPx", "AskPx", "VolatilityPct", "RiskFreeRatePct", "DividendYieldPct", "PriceTime" }, null, null, null, null)
           }));
     }
     #endregion
@@ -78,10 +78,10 @@ namespace MarketDataService.Messages {
       ticker_ = other.ticker_;
       bidPx_ = other.bidPx_;
       askPx_ = other.askPx_;
-      priceTime_ = other.priceTime_ != null ? other.priceTime_.Clone() : null;
-      dividendYieldPct_ = other.dividendYieldPct_;
-      riskFreeRatePct_ = other.riskFreeRatePct_;
       volatilityPct_ = other.volatilityPct_;
+      riskFreeRatePct_ = other.riskFreeRatePct_;
+      dividendYieldPct_ = other.dividendYieldPct_;
+      priceTime_ = other.priceTime_ != null ? other.priceTime_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -127,32 +127,20 @@ namespace MarketDataService.Messages {
       }
     }
 
-    /// <summary>Field number for the "priceTime" field.</summary>
-    public const int PriceTimeFieldNumber = 4;
-    private global::Google.Protobuf.WellKnownTypes.Timestamp priceTime_;
+    /// <summary>Field number for the "volatility_pct" field.</summary>
+    public const int VolatilityPctFieldNumber = 4;
+    private double volatilityPct_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Google.Protobuf.WellKnownTypes.Timestamp PriceTime {
-      get { return priceTime_; }
+    public double VolatilityPct {
+      get { return volatilityPct_; }
       set {
-        priceTime_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "dividend_yield_pct" field.</summary>
-    public const int DividendYieldPctFieldNumber = 5;
-    private double dividendYieldPct_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double DividendYieldPct {
-      get { return dividendYieldPct_; }
-      set {
-        dividendYieldPct_ = value;
+        volatilityPct_ = value;
       }
     }
 
     /// <summary>Field number for the "risk_free_rate_pct" field.</summary>
-    public const int RiskFreeRatePctFieldNumber = 6;
+    public const int RiskFreeRatePctFieldNumber = 5;
     private double riskFreeRatePct_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -163,15 +151,27 @@ namespace MarketDataService.Messages {
       }
     }
 
-    /// <summary>Field number for the "volatility_pct" field.</summary>
-    public const int VolatilityPctFieldNumber = 7;
-    private double volatilityPct_;
+    /// <summary>Field number for the "dividend_yield_pct" field.</summary>
+    public const int DividendYieldPctFieldNumber = 6;
+    private double dividendYieldPct_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double VolatilityPct {
-      get { return volatilityPct_; }
+    public double DividendYieldPct {
+      get { return dividendYieldPct_; }
       set {
-        volatilityPct_ = value;
+        dividendYieldPct_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "priceTime" field.</summary>
+    public const int PriceTimeFieldNumber = 7;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp priceTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp PriceTime {
+      get { return priceTime_; }
+      set {
+        priceTime_ = value;
       }
     }
 
@@ -193,10 +193,10 @@ namespace MarketDataService.Messages {
       if (Ticker != other.Ticker) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(BidPx, other.BidPx)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(AskPx, other.AskPx)) return false;
-      if (!object.Equals(PriceTime, other.PriceTime)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(DividendYieldPct, other.DividendYieldPct)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(RiskFreeRatePct, other.RiskFreeRatePct)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(VolatilityPct, other.VolatilityPct)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(RiskFreeRatePct, other.RiskFreeRatePct)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(DividendYieldPct, other.DividendYieldPct)) return false;
+      if (!object.Equals(PriceTime, other.PriceTime)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -207,10 +207,10 @@ namespace MarketDataService.Messages {
       if (Ticker.Length != 0) hash ^= Ticker.GetHashCode();
       if (BidPx != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(BidPx);
       if (AskPx != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(AskPx);
-      if (priceTime_ != null) hash ^= PriceTime.GetHashCode();
-      if (DividendYieldPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(DividendYieldPct);
-      if (RiskFreeRatePct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(RiskFreeRatePct);
       if (VolatilityPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(VolatilityPct);
+      if (RiskFreeRatePct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(RiskFreeRatePct);
+      if (DividendYieldPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(DividendYieldPct);
+      if (priceTime_ != null) hash ^= PriceTime.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -241,21 +241,21 @@ namespace MarketDataService.Messages {
         output.WriteRawTag(25);
         output.WriteDouble(AskPx);
       }
-      if (priceTime_ != null) {
-        output.WriteRawTag(34);
-        output.WriteMessage(PriceTime);
-      }
-      if (DividendYieldPct != 0D) {
-        output.WriteRawTag(41);
-        output.WriteDouble(DividendYieldPct);
+      if (VolatilityPct != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(VolatilityPct);
       }
       if (RiskFreeRatePct != 0D) {
-        output.WriteRawTag(49);
+        output.WriteRawTag(41);
         output.WriteDouble(RiskFreeRatePct);
       }
-      if (VolatilityPct != 0D) {
-        output.WriteRawTag(57);
-        output.WriteDouble(VolatilityPct);
+      if (DividendYieldPct != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(DividendYieldPct);
+      }
+      if (priceTime_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(PriceTime);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -279,21 +279,21 @@ namespace MarketDataService.Messages {
         output.WriteRawTag(25);
         output.WriteDouble(AskPx);
       }
-      if (priceTime_ != null) {
-        output.WriteRawTag(34);
-        output.WriteMessage(PriceTime);
-      }
-      if (DividendYieldPct != 0D) {
-        output.WriteRawTag(41);
-        output.WriteDouble(DividendYieldPct);
+      if (VolatilityPct != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(VolatilityPct);
       }
       if (RiskFreeRatePct != 0D) {
-        output.WriteRawTag(49);
+        output.WriteRawTag(41);
         output.WriteDouble(RiskFreeRatePct);
       }
-      if (VolatilityPct != 0D) {
-        output.WriteRawTag(57);
-        output.WriteDouble(VolatilityPct);
+      if (DividendYieldPct != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(DividendYieldPct);
+      }
+      if (priceTime_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(PriceTime);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -314,17 +314,17 @@ namespace MarketDataService.Messages {
       if (AskPx != 0D) {
         size += 1 + 8;
       }
-      if (priceTime_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PriceTime);
-      }
-      if (DividendYieldPct != 0D) {
+      if (VolatilityPct != 0D) {
         size += 1 + 8;
       }
       if (RiskFreeRatePct != 0D) {
         size += 1 + 8;
       }
-      if (VolatilityPct != 0D) {
+      if (DividendYieldPct != 0D) {
         size += 1 + 8;
+      }
+      if (priceTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PriceTime);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -347,20 +347,20 @@ namespace MarketDataService.Messages {
       if (other.AskPx != 0D) {
         AskPx = other.AskPx;
       }
+      if (other.VolatilityPct != 0D) {
+        VolatilityPct = other.VolatilityPct;
+      }
+      if (other.RiskFreeRatePct != 0D) {
+        RiskFreeRatePct = other.RiskFreeRatePct;
+      }
+      if (other.DividendYieldPct != 0D) {
+        DividendYieldPct = other.DividendYieldPct;
+      }
       if (other.priceTime_ != null) {
         if (priceTime_ == null) {
           PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
         PriceTime.MergeFrom(other.PriceTime);
-      }
-      if (other.DividendYieldPct != 0D) {
-        DividendYieldPct = other.DividendYieldPct;
-      }
-      if (other.RiskFreeRatePct != 0D) {
-        RiskFreeRatePct = other.RiskFreeRatePct;
-      }
-      if (other.VolatilityPct != 0D) {
-        VolatilityPct = other.VolatilityPct;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -389,23 +389,23 @@ namespace MarketDataService.Messages {
             AskPx = input.ReadDouble();
             break;
           }
-          case 34: {
+          case 33: {
+            VolatilityPct = input.ReadDouble();
+            break;
+          }
+          case 41: {
+            RiskFreeRatePct = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            DividendYieldPct = input.ReadDouble();
+            break;
+          }
+          case 58: {
             if (priceTime_ == null) {
               PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(PriceTime);
-            break;
-          }
-          case 41: {
-            DividendYieldPct = input.ReadDouble();
-            break;
-          }
-          case 49: {
-            RiskFreeRatePct = input.ReadDouble();
-            break;
-          }
-          case 57: {
-            VolatilityPct = input.ReadDouble();
             break;
           }
         }
@@ -435,23 +435,23 @@ namespace MarketDataService.Messages {
             AskPx = input.ReadDouble();
             break;
           }
-          case 34: {
+          case 33: {
+            VolatilityPct = input.ReadDouble();
+            break;
+          }
+          case 41: {
+            RiskFreeRatePct = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            DividendYieldPct = input.ReadDouble();
+            break;
+          }
+          case 58: {
             if (priceTime_ == null) {
               PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(PriceTime);
-            break;
-          }
-          case 41: {
-            DividendYieldPct = input.ReadDouble();
-            break;
-          }
-          case 49: {
-            RiskFreeRatePct = input.ReadDouble();
-            break;
-          }
-          case 57: {
-            VolatilityPct = input.ReadDouble();
             break;
           }
         }

@@ -25,19 +25,17 @@ namespace MarketDataDistributionService.Messages {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Ch9QYXJhbWV0ZXJTZXRVcGRhdGVNZXNzYWdlLnByb3RvGh9nb29nbGUvcHJv",
-            "dG9idWYvdGltZXN0YW1wLnByb3RvIoUBChlQYXJhbWV0ZXJTZXRVcGRhdGVN",
-            "ZXNzYWdlEg4KBnRpY2tlchgBIAEoCRItCglwcmljZVRpbWUYAiABKAsyGi5n",
-            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEikKEnBhcmFtZXRlcl9zZXRfbGlz",
-            "dBgDIAMoCzINLlBhcmFtZXRlclNldCJsCgxQYXJhbWV0ZXJTZXQSDwoHc3Bv",
-            "dF9weBgBIAEoARISCgp2b2xhdGlsaXR5GAIgASgBEhYKDnJpc2tfZnJlZV9y",
-            "YXRlGAMgASgBEhEKCWRpdl95aWVsZBgEIAEoARIMCgR0aW1lGAUgASgBQimq",
-            "AiZNYXJrZXREYXRhRGlzdHJpYnV0aW9uU2VydmljZS5NZXNzYWdlc2IGcHJv",
-            "dG8z"));
+            "dG9idWYvdGltZXN0YW1wLnByb3RvIskBChlQYXJhbWV0ZXJTZXRVcGRhdGVN",
+            "ZXNzYWdlEg4KBnRpY2tlchgBIAEoCRIPCgdzcG90X3B4GAIgASgBEhYKDnZv",
+            "bGF0aWxpdHlfcGN0GAMgASgBEhoKEnJpc2tfZnJlZV9yYXRlX3BjdBgEIAEo",
+            "ARIaChJkaXZpZGVuZF95aWVsZF9wY3QYBSABKAESDAoEdGltZRgGIAEoARIt",
+            "CglwcmljZVRpbWUYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1w",
+            "QimqAiZNYXJrZXREYXRhRGlzdHJpYnV0aW9uU2VydmljZS5NZXNzYWdlc2IG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MarketDataDistributionService.Messages.ParameterSetUpdateMessage), global::MarketDataDistributionService.Messages.ParameterSetUpdateMessage.Parser, new[]{ "Ticker", "PriceTime", "ParameterSetList" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::MarketDataDistributionService.Messages.ParameterSet), global::MarketDataDistributionService.Messages.ParameterSet.Parser, new[]{ "SpotPx", "Volatility", "RiskFreeRate", "DivYield", "Time" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MarketDataDistributionService.Messages.ParameterSetUpdateMessage), global::MarketDataDistributionService.Messages.ParameterSetUpdateMessage.Parser, new[]{ "Ticker", "SpotPx", "VolatilityPct", "RiskFreeRatePct", "DividendYieldPct", "Time", "PriceTime" }, null, null, null, null)
           }));
     }
     #endregion
@@ -79,8 +77,12 @@ namespace MarketDataDistributionService.Messages {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public ParameterSetUpdateMessage(ParameterSetUpdateMessage other) : this() {
       ticker_ = other.ticker_;
+      spotPx_ = other.spotPx_;
+      volatilityPct_ = other.volatilityPct_;
+      riskFreeRatePct_ = other.riskFreeRatePct_;
+      dividendYieldPct_ = other.dividendYieldPct_;
+      time_ = other.time_;
       priceTime_ = other.priceTime_ != null ? other.priceTime_.Clone() : null;
-      parameterSetList_ = other.parameterSetList_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -102,8 +104,68 @@ namespace MarketDataDistributionService.Messages {
       }
     }
 
+    /// <summary>Field number for the "spot_px" field.</summary>
+    public const int SpotPxFieldNumber = 2;
+    private double spotPx_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double SpotPx {
+      get { return spotPx_; }
+      set {
+        spotPx_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "volatility_pct" field.</summary>
+    public const int VolatilityPctFieldNumber = 3;
+    private double volatilityPct_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double VolatilityPct {
+      get { return volatilityPct_; }
+      set {
+        volatilityPct_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "risk_free_rate_pct" field.</summary>
+    public const int RiskFreeRatePctFieldNumber = 4;
+    private double riskFreeRatePct_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double RiskFreeRatePct {
+      get { return riskFreeRatePct_; }
+      set {
+        riskFreeRatePct_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "dividend_yield_pct" field.</summary>
+    public const int DividendYieldPctFieldNumber = 5;
+    private double dividendYieldPct_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double DividendYieldPct {
+      get { return dividendYieldPct_; }
+      set {
+        dividendYieldPct_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "time" field.</summary>
+    public const int TimeFieldNumber = 6;
+    private double time_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double Time {
+      get { return time_; }
+      set {
+        time_ = value;
+      }
+    }
+
     /// <summary>Field number for the "priceTime" field.</summary>
-    public const int PriceTimeFieldNumber = 2;
+    public const int PriceTimeFieldNumber = 7;
     private global::Google.Protobuf.WellKnownTypes.Timestamp priceTime_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -112,17 +174,6 @@ namespace MarketDataDistributionService.Messages {
       set {
         priceTime_ = value;
       }
-    }
-
-    /// <summary>Field number for the "parameter_set_list" field.</summary>
-    public const int ParameterSetListFieldNumber = 3;
-    private static readonly pb::FieldCodec<global::MarketDataDistributionService.Messages.ParameterSet> _repeated_parameterSetList_codec
-        = pb::FieldCodec.ForMessage(26, global::MarketDataDistributionService.Messages.ParameterSet.Parser);
-    private readonly pbc::RepeatedField<global::MarketDataDistributionService.Messages.ParameterSet> parameterSetList_ = new pbc::RepeatedField<global::MarketDataDistributionService.Messages.ParameterSet>();
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::MarketDataDistributionService.Messages.ParameterSet> ParameterSetList {
-      get { return parameterSetList_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -141,8 +192,12 @@ namespace MarketDataDistributionService.Messages {
         return true;
       }
       if (Ticker != other.Ticker) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SpotPx, other.SpotPx)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(VolatilityPct, other.VolatilityPct)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(RiskFreeRatePct, other.RiskFreeRatePct)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(DividendYieldPct, other.DividendYieldPct)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Time, other.Time)) return false;
       if (!object.Equals(PriceTime, other.PriceTime)) return false;
-      if(!parameterSetList_.Equals(other.parameterSetList_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -151,8 +206,12 @@ namespace MarketDataDistributionService.Messages {
     public override int GetHashCode() {
       int hash = 1;
       if (Ticker.Length != 0) hash ^= Ticker.GetHashCode();
+      if (SpotPx != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SpotPx);
+      if (VolatilityPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(VolatilityPct);
+      if (RiskFreeRatePct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(RiskFreeRatePct);
+      if (DividendYieldPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(DividendYieldPct);
+      if (Time != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Time);
       if (priceTime_ != null) hash ^= PriceTime.GetHashCode();
-      hash ^= parameterSetList_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -175,11 +234,30 @@ namespace MarketDataDistributionService.Messages {
         output.WriteRawTag(10);
         output.WriteString(Ticker);
       }
+      if (SpotPx != 0D) {
+        output.WriteRawTag(17);
+        output.WriteDouble(SpotPx);
+      }
+      if (VolatilityPct != 0D) {
+        output.WriteRawTag(25);
+        output.WriteDouble(VolatilityPct);
+      }
+      if (RiskFreeRatePct != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(RiskFreeRatePct);
+      }
+      if (DividendYieldPct != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(DividendYieldPct);
+      }
+      if (Time != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(Time);
+      }
       if (priceTime_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(58);
         output.WriteMessage(PriceTime);
       }
-      parameterSetList_.WriteTo(output, _repeated_parameterSetList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -194,11 +272,30 @@ namespace MarketDataDistributionService.Messages {
         output.WriteRawTag(10);
         output.WriteString(Ticker);
       }
+      if (SpotPx != 0D) {
+        output.WriteRawTag(17);
+        output.WriteDouble(SpotPx);
+      }
+      if (VolatilityPct != 0D) {
+        output.WriteRawTag(25);
+        output.WriteDouble(VolatilityPct);
+      }
+      if (RiskFreeRatePct != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(RiskFreeRatePct);
+      }
+      if (DividendYieldPct != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(DividendYieldPct);
+      }
+      if (Time != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(Time);
+      }
       if (priceTime_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(58);
         output.WriteMessage(PriceTime);
       }
-      parameterSetList_.WriteTo(ref output, _repeated_parameterSetList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -212,10 +309,24 @@ namespace MarketDataDistributionService.Messages {
       if (Ticker.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Ticker);
       }
+      if (SpotPx != 0D) {
+        size += 1 + 8;
+      }
+      if (VolatilityPct != 0D) {
+        size += 1 + 8;
+      }
+      if (RiskFreeRatePct != 0D) {
+        size += 1 + 8;
+      }
+      if (DividendYieldPct != 0D) {
+        size += 1 + 8;
+      }
+      if (Time != 0D) {
+        size += 1 + 8;
+      }
       if (priceTime_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(PriceTime);
       }
-      size += parameterSetList_.CalculateSize(_repeated_parameterSetList_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -231,13 +342,27 @@ namespace MarketDataDistributionService.Messages {
       if (other.Ticker.Length != 0) {
         Ticker = other.Ticker;
       }
+      if (other.SpotPx != 0D) {
+        SpotPx = other.SpotPx;
+      }
+      if (other.VolatilityPct != 0D) {
+        VolatilityPct = other.VolatilityPct;
+      }
+      if (other.RiskFreeRatePct != 0D) {
+        RiskFreeRatePct = other.RiskFreeRatePct;
+      }
+      if (other.DividendYieldPct != 0D) {
+        DividendYieldPct = other.DividendYieldPct;
+      }
+      if (other.Time != 0D) {
+        Time = other.Time;
+      }
       if (other.priceTime_ != null) {
         if (priceTime_ == null) {
           PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
         PriceTime.MergeFrom(other.PriceTime);
       }
-      parameterSetList_.Add(other.parameterSetList_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -257,15 +382,31 @@ namespace MarketDataDistributionService.Messages {
             Ticker = input.ReadString();
             break;
           }
-          case 18: {
+          case 17: {
+            SpotPx = input.ReadDouble();
+            break;
+          }
+          case 25: {
+            VolatilityPct = input.ReadDouble();
+            break;
+          }
+          case 33: {
+            RiskFreeRatePct = input.ReadDouble();
+            break;
+          }
+          case 41: {
+            DividendYieldPct = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            Time = input.ReadDouble();
+            break;
+          }
+          case 58: {
             if (priceTime_ == null) {
               PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(PriceTime);
-            break;
-          }
-          case 26: {
-            parameterSetList_.AddEntriesFrom(input, _repeated_parameterSetList_codec);
             break;
           }
         }
@@ -287,352 +428,31 @@ namespace MarketDataDistributionService.Messages {
             Ticker = input.ReadString();
             break;
           }
-          case 18: {
+          case 17: {
+            SpotPx = input.ReadDouble();
+            break;
+          }
+          case 25: {
+            VolatilityPct = input.ReadDouble();
+            break;
+          }
+          case 33: {
+            RiskFreeRatePct = input.ReadDouble();
+            break;
+          }
+          case 41: {
+            DividendYieldPct = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            Time = input.ReadDouble();
+            break;
+          }
+          case 58: {
             if (priceTime_ == null) {
               PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(PriceTime);
-            break;
-          }
-          case 26: {
-            parameterSetList_.AddEntriesFrom(ref input, _repeated_parameterSetList_codec);
-            break;
-          }
-        }
-      }
-    }
-    #endif
-
-  }
-
-  public sealed partial class ParameterSet : pb::IMessage<ParameterSet>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<ParameterSet> _parser = new pb::MessageParser<ParameterSet>(() => new ParameterSet());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<ParameterSet> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::MarketDataDistributionService.Messages.ParameterSetUpdateMessageReflection.Descriptor.MessageTypes[1]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ParameterSet() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ParameterSet(ParameterSet other) : this() {
-      spotPx_ = other.spotPx_;
-      volatility_ = other.volatility_;
-      riskFreeRate_ = other.riskFreeRate_;
-      divYield_ = other.divYield_;
-      time_ = other.time_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public ParameterSet Clone() {
-      return new ParameterSet(this);
-    }
-
-    /// <summary>Field number for the "spot_px" field.</summary>
-    public const int SpotPxFieldNumber = 1;
-    private double spotPx_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double SpotPx {
-      get { return spotPx_; }
-      set {
-        spotPx_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "volatility" field.</summary>
-    public const int VolatilityFieldNumber = 2;
-    private double volatility_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double Volatility {
-      get { return volatility_; }
-      set {
-        volatility_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "risk_free_rate" field.</summary>
-    public const int RiskFreeRateFieldNumber = 3;
-    private double riskFreeRate_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double RiskFreeRate {
-      get { return riskFreeRate_; }
-      set {
-        riskFreeRate_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "div_yield" field.</summary>
-    public const int DivYieldFieldNumber = 4;
-    private double divYield_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double DivYield {
-      get { return divYield_; }
-      set {
-        divYield_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "time" field.</summary>
-    public const int TimeFieldNumber = 5;
-    private double time_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double Time {
-      get { return time_; }
-      set {
-        time_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override bool Equals(object other) {
-      return Equals(other as ParameterSet);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(ParameterSet other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SpotPx, other.SpotPx)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Volatility, other.Volatility)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(RiskFreeRate, other.RiskFreeRate)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(DivYield, other.DivYield)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Time, other.Time)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (SpotPx != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SpotPx);
-      if (Volatility != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Volatility);
-      if (RiskFreeRate != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(RiskFreeRate);
-      if (DivYield != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(DivYield);
-      if (Time != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Time);
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
-      if (SpotPx != 0D) {
-        output.WriteRawTag(9);
-        output.WriteDouble(SpotPx);
-      }
-      if (Volatility != 0D) {
-        output.WriteRawTag(17);
-        output.WriteDouble(Volatility);
-      }
-      if (RiskFreeRate != 0D) {
-        output.WriteRawTag(25);
-        output.WriteDouble(RiskFreeRate);
-      }
-      if (DivYield != 0D) {
-        output.WriteRawTag(33);
-        output.WriteDouble(DivYield);
-      }
-      if (Time != 0D) {
-        output.WriteRawTag(41);
-        output.WriteDouble(Time);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (SpotPx != 0D) {
-        output.WriteRawTag(9);
-        output.WriteDouble(SpotPx);
-      }
-      if (Volatility != 0D) {
-        output.WriteRawTag(17);
-        output.WriteDouble(Volatility);
-      }
-      if (RiskFreeRate != 0D) {
-        output.WriteRawTag(25);
-        output.WriteDouble(RiskFreeRate);
-      }
-      if (DivYield != 0D) {
-        output.WriteRawTag(33);
-        output.WriteDouble(DivYield);
-      }
-      if (Time != 0D) {
-        output.WriteRawTag(41);
-        output.WriteDouble(Time);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int CalculateSize() {
-      int size = 0;
-      if (SpotPx != 0D) {
-        size += 1 + 8;
-      }
-      if (Volatility != 0D) {
-        size += 1 + 8;
-      }
-      if (RiskFreeRate != 0D) {
-        size += 1 + 8;
-      }
-      if (DivYield != 0D) {
-        size += 1 + 8;
-      }
-      if (Time != 0D) {
-        size += 1 + 8;
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(ParameterSet other) {
-      if (other == null) {
-        return;
-      }
-      if (other.SpotPx != 0D) {
-        SpotPx = other.SpotPx;
-      }
-      if (other.Volatility != 0D) {
-        Volatility = other.Volatility;
-      }
-      if (other.RiskFreeRate != 0D) {
-        RiskFreeRate = other.RiskFreeRate;
-      }
-      if (other.DivYield != 0D) {
-        DivYield = other.DivYield;
-      }
-      if (other.Time != 0D) {
-        Time = other.Time;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 9: {
-            SpotPx = input.ReadDouble();
-            break;
-          }
-          case 17: {
-            Volatility = input.ReadDouble();
-            break;
-          }
-          case 25: {
-            RiskFreeRate = input.ReadDouble();
-            break;
-          }
-          case 33: {
-            DivYield = input.ReadDouble();
-            break;
-          }
-          case 41: {
-            Time = input.ReadDouble();
-            break;
-          }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 9: {
-            SpotPx = input.ReadDouble();
-            break;
-          }
-          case 17: {
-            Volatility = input.ReadDouble();
-            break;
-          }
-          case 25: {
-            RiskFreeRate = input.ReadDouble();
-            break;
-          }
-          case 33: {
-            DivYield = input.ReadDouble();
-            break;
-          }
-          case 41: {
-            Time = input.ReadDouble();
             break;
           }
         }
