@@ -1,4 +1,5 @@
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 using MarketDataDistributionService.Configs;
 using MarketDataDistributionService.Messages;
 using MarketDataService.Messages;
@@ -13,18 +14,18 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
 {
     private readonly ILogger<MarketDataDistributionServiceHandler> _logger;
     private readonly AppParamsConfiguration _appParamsConfiguration;
-    private readonly ParameterSetRangesConfiguration _parameterSetRangesConfiguration;
+    private readonly Dictionary<string, OptionStaticDataConfiguration> _optionStaticDataConfigurationDict;
     private Channel<MarketDataMessage> _inboundChannel;
     private Channel<ParameterSetUpdateMessage> _outboundChannel;
     private List<Task> _processorTaskList;
 
     public MarketDataDistributionServiceHandler(ILogger<MarketDataDistributionServiceHandler> logger, 
         IOptions<AppParamsConfiguration> appParamsConfigurationOption,
-        IOptions<ParameterSetRangesConfiguration> parameterSetRangesConfigurationOption)
+        IOptions<List<OptionStaticDataConfiguration>> optionStaticDataConfigurationListOption)
     {
         _logger = logger;
         _appParamsConfiguration = appParamsConfigurationOption.Value;
-        _parameterSetRangesConfiguration = parameterSetRangesConfigurationOption.Value;
+        _optionStaticDataConfigurationDict = optionStaticDataConfigurationListOption.Value.ToDictionary(x => x.Underlier);
         _inboundChannel = Channel.CreateBounded<MarketDataMessage>(_appParamsConfiguration.ReceiveMessageCapacity);
         _outboundChannel = Channel.CreateBounded<ParameterSetUpdateMessage>(_appParamsConfiguration.SendMessageCapacity);
         _processorTaskList = new List<Task>();
@@ -83,7 +84,7 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
     private async Task PublisherAsync(CancellationToken stoppingToken, string host, int port, string topicPrefix, int maxCapacity,
         Func<CancellationToken, Task<ParameterSetUpdateMessage>> readFromChannel)
     {
-        _logger.LogInformation("Publisher binding on {Host}:{Port}, TopicPrefix: {TopicPrefix} ", host, port, topicPrefix);
+        _logger.LogInformation("Publisher binding on {Host}:{Port}, TopicPrefix: {TopicPrefix}_<Instrument Name>", host, port, topicPrefix);
 
         using var pubSocket = new PublisherSocket();
         pubSocket.Options.SendHighWatermark = maxCapacity;
@@ -92,9 +93,9 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
         while (!stoppingToken.IsCancellationRequested)
         {
             var parameterSetUpdateMessage = await readFromChannel(stoppingToken);
-            var newTopic = $"{topicPrefix}{parameterSetUpdateMessage.Ticker}_IN";
-            _logger.LogInformation("sending: {Ticker}, PriceTime: {PriceTime}, Topic: {newTopic}", 
-                parameterSetUpdateMessage.Ticker, parameterSetUpdateMessage.PriceTime, newTopic);
+            var newTopic = $"{topicPrefix}_{parameterSetUpdateMessage.Underlier}";
+            _logger.LogInformation("sending: {Underlier}, PriceTime: {PriceTime}, Topic: {newTopic}", 
+                parameterSetUpdateMessage.Underlier, parameterSetUpdateMessage.PriceTime, newTopic);
             pubSocket.SendMoreFrame(newTopic).SendFrame(parameterSetUpdateMessage.ToByteArray());
         }
     }
@@ -122,15 +123,19 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
         }
     }
 
-    private ParameterSetUpdateMessage GetParameterSetUpdateMessage(MarketDataMessage marketDataMessage) => 
-    new()
+    private ParameterSetUpdateMessage GetParameterSetUpdateMessage(MarketDataMessage marketDataMessage)
+    {
+        var optionStaticData = _optionStaticDataConfigurationDict[marketDataMessage.Underlier];
+        return new ParameterSetUpdateMessage()
         {
-            Ticker = marketDataMessage.Ticker,
+            Underlier = marketDataMessage.Underlier,
             SpotPx = (marketDataMessage.BidPx + marketDataMessage.AskPx) / 2.0,
             VolatilityPct = marketDataMessage.VolatilityPct,
             RiskFreeRatePct = marketDataMessage.RiskFreeRatePct,
             DividendYieldPct = marketDataMessage.DividendYieldPct,
-            Time = 1.0,
+            ExpiryDate = DateTime.Today.AddDays(optionStaticData.OptionExpiryDateInDays).ToTimestamp(),
+            StrikePrice = optionStaticData.StrikePrice,
             PriceTime = marketDataMessage.PriceTime
-    };
+        };
+    }
 }

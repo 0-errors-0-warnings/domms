@@ -25,17 +25,18 @@ namespace MarketDataDistributionService.Messages {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Ch9QYXJhbWV0ZXJTZXRVcGRhdGVNZXNzYWdlLnByb3RvGh9nb29nbGUvcHJv",
-            "dG9idWYvdGltZXN0YW1wLnByb3RvIskBChlQYXJhbWV0ZXJTZXRVcGRhdGVN",
-            "ZXNzYWdlEg4KBnRpY2tlchgBIAEoCRIPCgdzcG90X3B4GAIgASgBEhYKDnZv",
-            "bGF0aWxpdHlfcGN0GAMgASgBEhoKEnJpc2tfZnJlZV9yYXRlX3BjdBgEIAEo",
-            "ARIaChJkaXZpZGVuZF95aWVsZF9wY3QYBSABKAESDAoEdGltZRgGIAEoARIt",
-            "CglwcmljZVRpbWUYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1w",
-            "QimqAiZNYXJrZXREYXRhRGlzdHJpYnV0aW9uU2VydmljZS5NZXNzYWdlc2IG",
-            "cHJvdG8z"));
+            "dG9idWYvdGltZXN0YW1wLnByb3RvIoUCChlQYXJhbWV0ZXJTZXRVcGRhdGVN",
+            "ZXNzYWdlEhEKCXVuZGVybGllchgBIAEoCRIPCgdzcG90X3B4GAIgASgBEhYK",
+            "DnZvbGF0aWxpdHlfcGN0GAMgASgBEhoKEnJpc2tfZnJlZV9yYXRlX3BjdBgE",
+            "IAEoARIaChJkaXZpZGVuZF95aWVsZF9wY3QYBSABKAESLwoLZXhwaXJ5X2Rh",
+            "dGUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhQKDHN0cmlr",
+            "ZV9wcmljZRgHIAEoARItCglwcmljZVRpbWUYCCABKAsyGi5nb29nbGUucHJv",
+            "dG9idWYuVGltZXN0YW1wQimqAiZNYXJrZXREYXRhRGlzdHJpYnV0aW9uU2Vy",
+            "dmljZS5NZXNzYWdlc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MarketDataDistributionService.Messages.ParameterSetUpdateMessage), global::MarketDataDistributionService.Messages.ParameterSetUpdateMessage.Parser, new[]{ "Ticker", "SpotPx", "VolatilityPct", "RiskFreeRatePct", "DividendYieldPct", "Time", "PriceTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MarketDataDistributionService.Messages.ParameterSetUpdateMessage), global::MarketDataDistributionService.Messages.ParameterSetUpdateMessage.Parser, new[]{ "Underlier", "SpotPx", "VolatilityPct", "RiskFreeRatePct", "DividendYieldPct", "ExpiryDate", "StrikePrice", "PriceTime" }, null, null, null, null)
           }));
     }
     #endregion
@@ -76,12 +77,13 @@ namespace MarketDataDistributionService.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public ParameterSetUpdateMessage(ParameterSetUpdateMessage other) : this() {
-      ticker_ = other.ticker_;
+      underlier_ = other.underlier_;
       spotPx_ = other.spotPx_;
       volatilityPct_ = other.volatilityPct_;
       riskFreeRatePct_ = other.riskFreeRatePct_;
       dividendYieldPct_ = other.dividendYieldPct_;
-      time_ = other.time_;
+      expiryDate_ = other.expiryDate_ != null ? other.expiryDate_.Clone() : null;
+      strikePrice_ = other.strikePrice_;
       priceTime_ = other.priceTime_ != null ? other.priceTime_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -92,15 +94,15 @@ namespace MarketDataDistributionService.Messages {
       return new ParameterSetUpdateMessage(this);
     }
 
-    /// <summary>Field number for the "ticker" field.</summary>
-    public const int TickerFieldNumber = 1;
-    private string ticker_ = "";
+    /// <summary>Field number for the "underlier" field.</summary>
+    public const int UnderlierFieldNumber = 1;
+    private string underlier_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Ticker {
-      get { return ticker_; }
+    public string Underlier {
+      get { return underlier_; }
       set {
-        ticker_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        underlier_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -152,20 +154,32 @@ namespace MarketDataDistributionService.Messages {
       }
     }
 
-    /// <summary>Field number for the "time" field.</summary>
-    public const int TimeFieldNumber = 6;
-    private double time_;
+    /// <summary>Field number for the "expiry_date" field.</summary>
+    public const int ExpiryDateFieldNumber = 6;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp expiryDate_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public double Time {
-      get { return time_; }
+    public global::Google.Protobuf.WellKnownTypes.Timestamp ExpiryDate {
+      get { return expiryDate_; }
       set {
-        time_ = value;
+        expiryDate_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "strike_price" field.</summary>
+    public const int StrikePriceFieldNumber = 7;
+    private double strikePrice_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double StrikePrice {
+      get { return strikePrice_; }
+      set {
+        strikePrice_ = value;
       }
     }
 
     /// <summary>Field number for the "priceTime" field.</summary>
-    public const int PriceTimeFieldNumber = 7;
+    public const int PriceTimeFieldNumber = 8;
     private global::Google.Protobuf.WellKnownTypes.Timestamp priceTime_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -191,12 +205,13 @@ namespace MarketDataDistributionService.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Ticker != other.Ticker) return false;
+      if (Underlier != other.Underlier) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SpotPx, other.SpotPx)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(VolatilityPct, other.VolatilityPct)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(RiskFreeRatePct, other.RiskFreeRatePct)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(DividendYieldPct, other.DividendYieldPct)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Time, other.Time)) return false;
+      if (!object.Equals(ExpiryDate, other.ExpiryDate)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(StrikePrice, other.StrikePrice)) return false;
       if (!object.Equals(PriceTime, other.PriceTime)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -205,12 +220,13 @@ namespace MarketDataDistributionService.Messages {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Ticker.Length != 0) hash ^= Ticker.GetHashCode();
+      if (Underlier.Length != 0) hash ^= Underlier.GetHashCode();
       if (SpotPx != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SpotPx);
       if (VolatilityPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(VolatilityPct);
       if (RiskFreeRatePct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(RiskFreeRatePct);
       if (DividendYieldPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(DividendYieldPct);
-      if (Time != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Time);
+      if (expiryDate_ != null) hash ^= ExpiryDate.GetHashCode();
+      if (StrikePrice != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(StrikePrice);
       if (priceTime_ != null) hash ^= PriceTime.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -230,9 +246,9 @@ namespace MarketDataDistributionService.Messages {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Ticker.Length != 0) {
+      if (Underlier.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Ticker);
+        output.WriteString(Underlier);
       }
       if (SpotPx != 0D) {
         output.WriteRawTag(17);
@@ -250,12 +266,16 @@ namespace MarketDataDistributionService.Messages {
         output.WriteRawTag(41);
         output.WriteDouble(DividendYieldPct);
       }
-      if (Time != 0D) {
-        output.WriteRawTag(49);
-        output.WriteDouble(Time);
+      if (expiryDate_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(ExpiryDate);
+      }
+      if (StrikePrice != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(StrikePrice);
       }
       if (priceTime_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(66);
         output.WriteMessage(PriceTime);
       }
       if (_unknownFields != null) {
@@ -268,9 +288,9 @@ namespace MarketDataDistributionService.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Ticker.Length != 0) {
+      if (Underlier.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Ticker);
+        output.WriteString(Underlier);
       }
       if (SpotPx != 0D) {
         output.WriteRawTag(17);
@@ -288,12 +308,16 @@ namespace MarketDataDistributionService.Messages {
         output.WriteRawTag(41);
         output.WriteDouble(DividendYieldPct);
       }
-      if (Time != 0D) {
-        output.WriteRawTag(49);
-        output.WriteDouble(Time);
+      if (expiryDate_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(ExpiryDate);
+      }
+      if (StrikePrice != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(StrikePrice);
       }
       if (priceTime_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(66);
         output.WriteMessage(PriceTime);
       }
       if (_unknownFields != null) {
@@ -306,8 +330,8 @@ namespace MarketDataDistributionService.Messages {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Ticker.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Ticker);
+      if (Underlier.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Underlier);
       }
       if (SpotPx != 0D) {
         size += 1 + 8;
@@ -321,7 +345,10 @@ namespace MarketDataDistributionService.Messages {
       if (DividendYieldPct != 0D) {
         size += 1 + 8;
       }
-      if (Time != 0D) {
+      if (expiryDate_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ExpiryDate);
+      }
+      if (StrikePrice != 0D) {
         size += 1 + 8;
       }
       if (priceTime_ != null) {
@@ -339,8 +366,8 @@ namespace MarketDataDistributionService.Messages {
       if (other == null) {
         return;
       }
-      if (other.Ticker.Length != 0) {
-        Ticker = other.Ticker;
+      if (other.Underlier.Length != 0) {
+        Underlier = other.Underlier;
       }
       if (other.SpotPx != 0D) {
         SpotPx = other.SpotPx;
@@ -354,8 +381,14 @@ namespace MarketDataDistributionService.Messages {
       if (other.DividendYieldPct != 0D) {
         DividendYieldPct = other.DividendYieldPct;
       }
-      if (other.Time != 0D) {
-        Time = other.Time;
+      if (other.expiryDate_ != null) {
+        if (expiryDate_ == null) {
+          ExpiryDate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        ExpiryDate.MergeFrom(other.ExpiryDate);
+      }
+      if (other.StrikePrice != 0D) {
+        StrikePrice = other.StrikePrice;
       }
       if (other.priceTime_ != null) {
         if (priceTime_ == null) {
@@ -379,7 +412,7 @@ namespace MarketDataDistributionService.Messages {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            Ticker = input.ReadString();
+            Underlier = input.ReadString();
             break;
           }
           case 17: {
@@ -398,11 +431,18 @@ namespace MarketDataDistributionService.Messages {
             DividendYieldPct = input.ReadDouble();
             break;
           }
-          case 49: {
-            Time = input.ReadDouble();
+          case 50: {
+            if (expiryDate_ == null) {
+              ExpiryDate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(ExpiryDate);
             break;
           }
-          case 58: {
+          case 57: {
+            StrikePrice = input.ReadDouble();
+            break;
+          }
+          case 66: {
             if (priceTime_ == null) {
               PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
@@ -425,7 +465,7 @@ namespace MarketDataDistributionService.Messages {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            Ticker = input.ReadString();
+            Underlier = input.ReadString();
             break;
           }
           case 17: {
@@ -444,11 +484,18 @@ namespace MarketDataDistributionService.Messages {
             DividendYieldPct = input.ReadDouble();
             break;
           }
-          case 49: {
-            Time = input.ReadDouble();
+          case 50: {
+            if (expiryDate_ == null) {
+              ExpiryDate = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(ExpiryDate);
             break;
           }
-          case 58: {
+          case 57: {
+            StrikePrice = input.ReadDouble();
+            break;
+          }
+          case 66: {
             if (priceTime_ == null) {
               PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }

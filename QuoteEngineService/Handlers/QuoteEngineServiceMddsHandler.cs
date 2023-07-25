@@ -89,7 +89,7 @@ public class QuoteEngineServiceMddsHandler : IMddsServiceHandler
 
             if (count % 50000 == 0)
             {
-                _logger.LogInformation("parameterSetUpdateMessage: {Ticker}, PriceTime: {PriceTime}", parameterSetUpdateMessage.Ticker, parameterSetUpdateMessage.PriceTime);
+                _logger.LogInformation("parameterSetUpdateMessage: {Underlier}, PriceTime: {PriceTime}", parameterSetUpdateMessage.Underlier, parameterSetUpdateMessage.PriceTime);
             }
             //TODO: update PS via double buffering
             //TODO: publish

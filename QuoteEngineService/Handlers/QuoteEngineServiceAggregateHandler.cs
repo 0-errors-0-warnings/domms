@@ -7,12 +7,12 @@ namespace QuoteEngineService.Handlers;
 public class QuoteEngineServiceAggregateHandler: IServiceHandler
 {
     private readonly ILogger<QuoteEngineServiceAggregateHandler> _aggregateLogger;
-    private readonly ILogger<QuoteEngineServiceUnderlyingHandler> _underlyingLogger;
+    private readonly ILogger<QuoteEngineServiceCalcEngineHandler> _underlyingLogger;
     private readonly List<ZeroMqReceiveParamsConfiguration> _zeroMqReceiveParamsConfiguration;
     private readonly IMddsServiceHandler _mddsServiceHandler;
 
     public QuoteEngineServiceAggregateHandler(ILogger<QuoteEngineServiceAggregateHandler> aggregateLogger,
-        ILogger<QuoteEngineServiceUnderlyingHandler> calcEngineLogger,
+        ILogger<QuoteEngineServiceCalcEngineHandler> calcEngineLogger,
         IOptions<List<ZeroMqReceiveParamsConfiguration>> zeroMqReceiveParamsConfigurationOption,
         IMddsServiceHandler mddsServiceHandler)
     {
@@ -35,7 +35,7 @@ public class QuoteEngineServiceAggregateHandler: IServiceHandler
 
         foreach (var subscriberCfg in _zeroMqReceiveParamsConfiguration)
         {
-            subscribersList.Add(new QuoteEngineServiceUnderlyingHandler(_underlyingLogger, subscriberCfg).StartAsync(stoppingToken));
+            subscribersList.Add(new QuoteEngineServiceCalcEngineHandler(_underlyingLogger, subscriberCfg).StartAsync(stoppingToken));
         }
 
         Task.WaitAll(subscribersList.ToArray());

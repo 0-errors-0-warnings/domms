@@ -13,7 +13,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         IConfiguration configuration = hostContext.Configuration;
 
         services.Configure<AppParamsConfiguration>(configuration.GetSection("AppParams"));
-        services.Configure<ParameterSetRangesConfiguration>(configuration.GetSection("ParameterSetRanges"));
+        services.Configure<List<OptionStaticDataConfiguration>>(configuration.GetSection("OptionStaticData"));
 
         services.AddSingleton<IServiceHandler, MarketDataDistributionServiceHandler>();
 

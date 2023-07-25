@@ -3,6 +3,29 @@ option csharp_namespace = "CalcEngineService.Messages";
 import "google/protobuf/timestamp.proto";
 
 message ParameterSetMeshUpdateMessage {
-  string ticker = 1;
+  string underlier = 1;
   google.protobuf.Timestamp priceTime = 2;
+  repeated ParameterSet ParameterSetList = 3;
+}
+
+message ParameterSet {
+  int32 id = 1;
+  double spot_px = 2;
+  double volatility_pct = 3;
+  double risk_free_rate_pct = 4;
+  double dividend_yield_pct = 5;
+  double maturity_time_yrs = 6;
+  double strike_price = 7;
+  ValuationResults CallValuationResults = 8;
+  ValuationResults PutValuationResults = 9;
+}
+
+message ValuationResults {
+  double option_value = 1;
+  double delta = 2;
+  double gamma = 3;
+  double vega = 4;
+  double rho = 5;
+  double theta = 6;
+  double divrho = 7;
 }

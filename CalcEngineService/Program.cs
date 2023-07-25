@@ -14,8 +14,10 @@ IHost host = Host.CreateDefaultBuilder(args)
         IConfiguration configuration = hostContext.Configuration;
 
         services.Configure<AppParamsConfiguration>(configuration.GetSection("AppParams"));
+        services.Configure<List<MeshConfigSetConfiguration>>(configuration.GetSection("MeshConfigSet"));
 
         services.AddSingleton<IParameterSetUpdateCache, ParameterSetUpdateCache>();
+        services.AddSingleton<IMeshConfigSetCache, MeshConfigSetCache>();
         services.AddSingleton<IServiceHandler, CalcEngineServiceHandler>();
 
         services.AddHostedService<Worker>();

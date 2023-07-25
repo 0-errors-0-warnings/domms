@@ -25,14 +25,26 @@ namespace CalcEngineService.Messages {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiNQYXJhbWV0ZXJTZXRNZXNoVXBkYXRlTWVzc2FnZS5wcm90bxofZ29vZ2xl",
-            "L3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90byJeCh1QYXJhbWV0ZXJTZXRNZXNo",
-            "VXBkYXRlTWVzc2FnZRIOCgZ0aWNrZXIYASABKAkSLQoJcHJpY2VUaW1lGAIg",
-            "ASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEIdqgIaQ2FsY0VuZ2lu",
-            "ZVNlcnZpY2UuTWVzc2FnZXNiBnByb3RvMw=="));
+            "L3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90byKKAQodUGFyYW1ldGVyU2V0TWVz",
+            "aFVwZGF0ZU1lc3NhZ2USEQoJdW5kZXJsaWVyGAEgASgJEi0KCXByaWNlVGlt",
+            "ZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASJwoQUGFyYW1l",
+            "dGVyU2V0TGlzdBgDIAMoCzINLlBhcmFtZXRlclNldCKNAgoMUGFyYW1ldGVy",
+            "U2V0EgoKAmlkGAEgASgFEg8KB3Nwb3RfcHgYAiABKAESFgoOdm9sYXRpbGl0",
+            "eV9wY3QYAyABKAESGgoScmlza19mcmVlX3JhdGVfcGN0GAQgASgBEhoKEmRp",
+            "dmlkZW5kX3lpZWxkX3BjdBgFIAEoARIZChFtYXR1cml0eV90aW1lX3lycxgG",
+            "IAEoARIUCgxzdHJpa2VfcHJpY2UYByABKAESLwoUQ2FsbFZhbHVhdGlvblJl",
+            "c3VsdHMYCCABKAsyES5WYWx1YXRpb25SZXN1bHRzEi4KE1B1dFZhbHVhdGlv",
+            "blJlc3VsdHMYCSABKAsyES5WYWx1YXRpb25SZXN1bHRzIoABChBWYWx1YXRp",
+            "b25SZXN1bHRzEhQKDG9wdGlvbl92YWx1ZRgBIAEoARINCgVkZWx0YRgCIAEo",
+            "ARINCgVnYW1tYRgDIAEoARIMCgR2ZWdhGAQgASgBEgsKA3JobxgFIAEoARIN",
+            "CgV0aGV0YRgGIAEoARIOCgZkaXZyaG8YByABKAFCHaoCGkNhbGNFbmdpbmVT",
+            "ZXJ2aWNlLk1lc3NhZ2VzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::CalcEngineService.Messages.ParameterSetMeshUpdateMessage), global::CalcEngineService.Messages.ParameterSetMeshUpdateMessage.Parser, new[]{ "Ticker", "PriceTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::CalcEngineService.Messages.ParameterSetMeshUpdateMessage), global::CalcEngineService.Messages.ParameterSetMeshUpdateMessage.Parser, new[]{ "Underlier", "PriceTime", "ParameterSetList" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::CalcEngineService.Messages.ParameterSet), global::CalcEngineService.Messages.ParameterSet.Parser, new[]{ "Id", "SpotPx", "VolatilityPct", "RiskFreeRatePct", "DividendYieldPct", "MaturityTimeYrs", "StrikePrice", "CallValuationResults", "PutValuationResults" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::CalcEngineService.Messages.ValuationResults), global::CalcEngineService.Messages.ValuationResults.Parser, new[]{ "OptionValue", "Delta", "Gamma", "Vega", "Rho", "Theta", "Divrho" }, null, null, null, null)
           }));
     }
     #endregion
@@ -73,8 +85,9 @@ namespace CalcEngineService.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public ParameterSetMeshUpdateMessage(ParameterSetMeshUpdateMessage other) : this() {
-      ticker_ = other.ticker_;
+      underlier_ = other.underlier_;
       priceTime_ = other.priceTime_ != null ? other.priceTime_.Clone() : null;
+      parameterSetList_ = other.parameterSetList_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -84,15 +97,15 @@ namespace CalcEngineService.Messages {
       return new ParameterSetMeshUpdateMessage(this);
     }
 
-    /// <summary>Field number for the "ticker" field.</summary>
-    public const int TickerFieldNumber = 1;
-    private string ticker_ = "";
+    /// <summary>Field number for the "underlier" field.</summary>
+    public const int UnderlierFieldNumber = 1;
+    private string underlier_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Ticker {
-      get { return ticker_; }
+    public string Underlier {
+      get { return underlier_; }
       set {
-        ticker_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        underlier_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -106,6 +119,17 @@ namespace CalcEngineService.Messages {
       set {
         priceTime_ = value;
       }
+    }
+
+    /// <summary>Field number for the "ParameterSetList" field.</summary>
+    public const int ParameterSetListFieldNumber = 3;
+    private static readonly pb::FieldCodec<global::CalcEngineService.Messages.ParameterSet> _repeated_parameterSetList_codec
+        = pb::FieldCodec.ForMessage(26, global::CalcEngineService.Messages.ParameterSet.Parser);
+    private readonly pbc::RepeatedField<global::CalcEngineService.Messages.ParameterSet> parameterSetList_ = new pbc::RepeatedField<global::CalcEngineService.Messages.ParameterSet>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::CalcEngineService.Messages.ParameterSet> ParameterSetList {
+      get { return parameterSetList_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -123,8 +147,9 @@ namespace CalcEngineService.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Ticker != other.Ticker) return false;
+      if (Underlier != other.Underlier) return false;
       if (!object.Equals(PriceTime, other.PriceTime)) return false;
+      if(!parameterSetList_.Equals(other.parameterSetList_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -132,8 +157,9 @@ namespace CalcEngineService.Messages {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Ticker.Length != 0) hash ^= Ticker.GetHashCode();
+      if (Underlier.Length != 0) hash ^= Underlier.GetHashCode();
       if (priceTime_ != null) hash ^= PriceTime.GetHashCode();
+      hash ^= parameterSetList_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -152,14 +178,15 @@ namespace CalcEngineService.Messages {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Ticker.Length != 0) {
+      if (Underlier.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Ticker);
+        output.WriteString(Underlier);
       }
       if (priceTime_ != null) {
         output.WriteRawTag(18);
         output.WriteMessage(PriceTime);
       }
+      parameterSetList_.WriteTo(output, _repeated_parameterSetList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -170,14 +197,15 @@ namespace CalcEngineService.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Ticker.Length != 0) {
+      if (Underlier.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Ticker);
+        output.WriteString(Underlier);
       }
       if (priceTime_ != null) {
         output.WriteRawTag(18);
         output.WriteMessage(PriceTime);
       }
+      parameterSetList_.WriteTo(ref output, _repeated_parameterSetList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -188,12 +216,13 @@ namespace CalcEngineService.Messages {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Ticker.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Ticker);
+      if (Underlier.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Underlier);
       }
       if (priceTime_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(PriceTime);
       }
+      size += parameterSetList_.CalculateSize(_repeated_parameterSetList_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -206,8 +235,8 @@ namespace CalcEngineService.Messages {
       if (other == null) {
         return;
       }
-      if (other.Ticker.Length != 0) {
-        Ticker = other.Ticker;
+      if (other.Underlier.Length != 0) {
+        Underlier = other.Underlier;
       }
       if (other.priceTime_ != null) {
         if (priceTime_ == null) {
@@ -215,6 +244,7 @@ namespace CalcEngineService.Messages {
         }
         PriceTime.MergeFrom(other.PriceTime);
       }
+      parameterSetList_.Add(other.parameterSetList_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -231,7 +261,7 @@ namespace CalcEngineService.Messages {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            Ticker = input.ReadString();
+            Underlier = input.ReadString();
             break;
           }
           case 18: {
@@ -239,6 +269,10 @@ namespace CalcEngineService.Messages {
               PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(PriceTime);
+            break;
+          }
+          case 26: {
+            parameterSetList_.AddEntriesFrom(input, _repeated_parameterSetList_codec);
             break;
           }
         }
@@ -257,7 +291,7 @@ namespace CalcEngineService.Messages {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            Ticker = input.ReadString();
+            Underlier = input.ReadString();
             break;
           }
           case 18: {
@@ -265,6 +299,924 @@ namespace CalcEngineService.Messages {
               PriceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(PriceTime);
+            break;
+          }
+          case 26: {
+            parameterSetList_.AddEntriesFrom(ref input, _repeated_parameterSetList_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class ParameterSet : pb::IMessage<ParameterSet>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ParameterSet> _parser = new pb::MessageParser<ParameterSet>(() => new ParameterSet());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ParameterSet> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::CalcEngineService.Messages.ParameterSetMeshUpdateMessageReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ParameterSet() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ParameterSet(ParameterSet other) : this() {
+      id_ = other.id_;
+      spotPx_ = other.spotPx_;
+      volatilityPct_ = other.volatilityPct_;
+      riskFreeRatePct_ = other.riskFreeRatePct_;
+      dividendYieldPct_ = other.dividendYieldPct_;
+      maturityTimeYrs_ = other.maturityTimeYrs_;
+      strikePrice_ = other.strikePrice_;
+      callValuationResults_ = other.callValuationResults_ != null ? other.callValuationResults_.Clone() : null;
+      putValuationResults_ = other.putValuationResults_ != null ? other.putValuationResults_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ParameterSet Clone() {
+      return new ParameterSet(this);
+    }
+
+    /// <summary>Field number for the "id" field.</summary>
+    public const int IdFieldNumber = 1;
+    private int id_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int Id {
+      get { return id_; }
+      set {
+        id_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "spot_px" field.</summary>
+    public const int SpotPxFieldNumber = 2;
+    private double spotPx_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double SpotPx {
+      get { return spotPx_; }
+      set {
+        spotPx_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "volatility_pct" field.</summary>
+    public const int VolatilityPctFieldNumber = 3;
+    private double volatilityPct_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double VolatilityPct {
+      get { return volatilityPct_; }
+      set {
+        volatilityPct_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "risk_free_rate_pct" field.</summary>
+    public const int RiskFreeRatePctFieldNumber = 4;
+    private double riskFreeRatePct_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double RiskFreeRatePct {
+      get { return riskFreeRatePct_; }
+      set {
+        riskFreeRatePct_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "dividend_yield_pct" field.</summary>
+    public const int DividendYieldPctFieldNumber = 5;
+    private double dividendYieldPct_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double DividendYieldPct {
+      get { return dividendYieldPct_; }
+      set {
+        dividendYieldPct_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "maturity_time_yrs" field.</summary>
+    public const int MaturityTimeYrsFieldNumber = 6;
+    private double maturityTimeYrs_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double MaturityTimeYrs {
+      get { return maturityTimeYrs_; }
+      set {
+        maturityTimeYrs_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "strike_price" field.</summary>
+    public const int StrikePriceFieldNumber = 7;
+    private double strikePrice_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double StrikePrice {
+      get { return strikePrice_; }
+      set {
+        strikePrice_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "CallValuationResults" field.</summary>
+    public const int CallValuationResultsFieldNumber = 8;
+    private global::CalcEngineService.Messages.ValuationResults callValuationResults_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::CalcEngineService.Messages.ValuationResults CallValuationResults {
+      get { return callValuationResults_; }
+      set {
+        callValuationResults_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PutValuationResults" field.</summary>
+    public const int PutValuationResultsFieldNumber = 9;
+    private global::CalcEngineService.Messages.ValuationResults putValuationResults_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::CalcEngineService.Messages.ValuationResults PutValuationResults {
+      get { return putValuationResults_; }
+      set {
+        putValuationResults_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ParameterSet);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ParameterSet other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Id != other.Id) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(SpotPx, other.SpotPx)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(VolatilityPct, other.VolatilityPct)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(RiskFreeRatePct, other.RiskFreeRatePct)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(DividendYieldPct, other.DividendYieldPct)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(MaturityTimeYrs, other.MaturityTimeYrs)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(StrikePrice, other.StrikePrice)) return false;
+      if (!object.Equals(CallValuationResults, other.CallValuationResults)) return false;
+      if (!object.Equals(PutValuationResults, other.PutValuationResults)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Id != 0) hash ^= Id.GetHashCode();
+      if (SpotPx != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(SpotPx);
+      if (VolatilityPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(VolatilityPct);
+      if (RiskFreeRatePct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(RiskFreeRatePct);
+      if (DividendYieldPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(DividendYieldPct);
+      if (MaturityTimeYrs != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(MaturityTimeYrs);
+      if (StrikePrice != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(StrikePrice);
+      if (callValuationResults_ != null) hash ^= CallValuationResults.GetHashCode();
+      if (putValuationResults_ != null) hash ^= PutValuationResults.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Id != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Id);
+      }
+      if (SpotPx != 0D) {
+        output.WriteRawTag(17);
+        output.WriteDouble(SpotPx);
+      }
+      if (VolatilityPct != 0D) {
+        output.WriteRawTag(25);
+        output.WriteDouble(VolatilityPct);
+      }
+      if (RiskFreeRatePct != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(RiskFreeRatePct);
+      }
+      if (DividendYieldPct != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(DividendYieldPct);
+      }
+      if (MaturityTimeYrs != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(MaturityTimeYrs);
+      }
+      if (StrikePrice != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(StrikePrice);
+      }
+      if (callValuationResults_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(CallValuationResults);
+      }
+      if (putValuationResults_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(PutValuationResults);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Id != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Id);
+      }
+      if (SpotPx != 0D) {
+        output.WriteRawTag(17);
+        output.WriteDouble(SpotPx);
+      }
+      if (VolatilityPct != 0D) {
+        output.WriteRawTag(25);
+        output.WriteDouble(VolatilityPct);
+      }
+      if (RiskFreeRatePct != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(RiskFreeRatePct);
+      }
+      if (DividendYieldPct != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(DividendYieldPct);
+      }
+      if (MaturityTimeYrs != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(MaturityTimeYrs);
+      }
+      if (StrikePrice != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(StrikePrice);
+      }
+      if (callValuationResults_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(CallValuationResults);
+      }
+      if (putValuationResults_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(PutValuationResults);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Id != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Id);
+      }
+      if (SpotPx != 0D) {
+        size += 1 + 8;
+      }
+      if (VolatilityPct != 0D) {
+        size += 1 + 8;
+      }
+      if (RiskFreeRatePct != 0D) {
+        size += 1 + 8;
+      }
+      if (DividendYieldPct != 0D) {
+        size += 1 + 8;
+      }
+      if (MaturityTimeYrs != 0D) {
+        size += 1 + 8;
+      }
+      if (StrikePrice != 0D) {
+        size += 1 + 8;
+      }
+      if (callValuationResults_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CallValuationResults);
+      }
+      if (putValuationResults_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PutValuationResults);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ParameterSet other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Id != 0) {
+        Id = other.Id;
+      }
+      if (other.SpotPx != 0D) {
+        SpotPx = other.SpotPx;
+      }
+      if (other.VolatilityPct != 0D) {
+        VolatilityPct = other.VolatilityPct;
+      }
+      if (other.RiskFreeRatePct != 0D) {
+        RiskFreeRatePct = other.RiskFreeRatePct;
+      }
+      if (other.DividendYieldPct != 0D) {
+        DividendYieldPct = other.DividendYieldPct;
+      }
+      if (other.MaturityTimeYrs != 0D) {
+        MaturityTimeYrs = other.MaturityTimeYrs;
+      }
+      if (other.StrikePrice != 0D) {
+        StrikePrice = other.StrikePrice;
+      }
+      if (other.callValuationResults_ != null) {
+        if (callValuationResults_ == null) {
+          CallValuationResults = new global::CalcEngineService.Messages.ValuationResults();
+        }
+        CallValuationResults.MergeFrom(other.CallValuationResults);
+      }
+      if (other.putValuationResults_ != null) {
+        if (putValuationResults_ == null) {
+          PutValuationResults = new global::CalcEngineService.Messages.ValuationResults();
+        }
+        PutValuationResults.MergeFrom(other.PutValuationResults);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Id = input.ReadInt32();
+            break;
+          }
+          case 17: {
+            SpotPx = input.ReadDouble();
+            break;
+          }
+          case 25: {
+            VolatilityPct = input.ReadDouble();
+            break;
+          }
+          case 33: {
+            RiskFreeRatePct = input.ReadDouble();
+            break;
+          }
+          case 41: {
+            DividendYieldPct = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            MaturityTimeYrs = input.ReadDouble();
+            break;
+          }
+          case 57: {
+            StrikePrice = input.ReadDouble();
+            break;
+          }
+          case 66: {
+            if (callValuationResults_ == null) {
+              CallValuationResults = new global::CalcEngineService.Messages.ValuationResults();
+            }
+            input.ReadMessage(CallValuationResults);
+            break;
+          }
+          case 74: {
+            if (putValuationResults_ == null) {
+              PutValuationResults = new global::CalcEngineService.Messages.ValuationResults();
+            }
+            input.ReadMessage(PutValuationResults);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Id = input.ReadInt32();
+            break;
+          }
+          case 17: {
+            SpotPx = input.ReadDouble();
+            break;
+          }
+          case 25: {
+            VolatilityPct = input.ReadDouble();
+            break;
+          }
+          case 33: {
+            RiskFreeRatePct = input.ReadDouble();
+            break;
+          }
+          case 41: {
+            DividendYieldPct = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            MaturityTimeYrs = input.ReadDouble();
+            break;
+          }
+          case 57: {
+            StrikePrice = input.ReadDouble();
+            break;
+          }
+          case 66: {
+            if (callValuationResults_ == null) {
+              CallValuationResults = new global::CalcEngineService.Messages.ValuationResults();
+            }
+            input.ReadMessage(CallValuationResults);
+            break;
+          }
+          case 74: {
+            if (putValuationResults_ == null) {
+              PutValuationResults = new global::CalcEngineService.Messages.ValuationResults();
+            }
+            input.ReadMessage(PutValuationResults);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class ValuationResults : pb::IMessage<ValuationResults>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ValuationResults> _parser = new pb::MessageParser<ValuationResults>(() => new ValuationResults());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ValuationResults> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::CalcEngineService.Messages.ParameterSetMeshUpdateMessageReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ValuationResults() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ValuationResults(ValuationResults other) : this() {
+      optionValue_ = other.optionValue_;
+      delta_ = other.delta_;
+      gamma_ = other.gamma_;
+      vega_ = other.vega_;
+      rho_ = other.rho_;
+      theta_ = other.theta_;
+      divrho_ = other.divrho_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ValuationResults Clone() {
+      return new ValuationResults(this);
+    }
+
+    /// <summary>Field number for the "option_value" field.</summary>
+    public const int OptionValueFieldNumber = 1;
+    private double optionValue_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double OptionValue {
+      get { return optionValue_; }
+      set {
+        optionValue_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "delta" field.</summary>
+    public const int DeltaFieldNumber = 2;
+    private double delta_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double Delta {
+      get { return delta_; }
+      set {
+        delta_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gamma" field.</summary>
+    public const int GammaFieldNumber = 3;
+    private double gamma_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double Gamma {
+      get { return gamma_; }
+      set {
+        gamma_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "vega" field.</summary>
+    public const int VegaFieldNumber = 4;
+    private double vega_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double Vega {
+      get { return vega_; }
+      set {
+        vega_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rho" field.</summary>
+    public const int RhoFieldNumber = 5;
+    private double rho_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double Rho {
+      get { return rho_; }
+      set {
+        rho_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "theta" field.</summary>
+    public const int ThetaFieldNumber = 6;
+    private double theta_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double Theta {
+      get { return theta_; }
+      set {
+        theta_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "divrho" field.</summary>
+    public const int DivrhoFieldNumber = 7;
+    private double divrho_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double Divrho {
+      get { return divrho_; }
+      set {
+        divrho_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ValuationResults);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ValuationResults other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(OptionValue, other.OptionValue)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Delta, other.Delta)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Gamma, other.Gamma)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Vega, other.Vega)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Rho, other.Rho)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Theta, other.Theta)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Divrho, other.Divrho)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (OptionValue != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(OptionValue);
+      if (Delta != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Delta);
+      if (Gamma != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Gamma);
+      if (Vega != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Vega);
+      if (Rho != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Rho);
+      if (Theta != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Theta);
+      if (Divrho != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Divrho);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (OptionValue != 0D) {
+        output.WriteRawTag(9);
+        output.WriteDouble(OptionValue);
+      }
+      if (Delta != 0D) {
+        output.WriteRawTag(17);
+        output.WriteDouble(Delta);
+      }
+      if (Gamma != 0D) {
+        output.WriteRawTag(25);
+        output.WriteDouble(Gamma);
+      }
+      if (Vega != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(Vega);
+      }
+      if (Rho != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(Rho);
+      }
+      if (Theta != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(Theta);
+      }
+      if (Divrho != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(Divrho);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (OptionValue != 0D) {
+        output.WriteRawTag(9);
+        output.WriteDouble(OptionValue);
+      }
+      if (Delta != 0D) {
+        output.WriteRawTag(17);
+        output.WriteDouble(Delta);
+      }
+      if (Gamma != 0D) {
+        output.WriteRawTag(25);
+        output.WriteDouble(Gamma);
+      }
+      if (Vega != 0D) {
+        output.WriteRawTag(33);
+        output.WriteDouble(Vega);
+      }
+      if (Rho != 0D) {
+        output.WriteRawTag(41);
+        output.WriteDouble(Rho);
+      }
+      if (Theta != 0D) {
+        output.WriteRawTag(49);
+        output.WriteDouble(Theta);
+      }
+      if (Divrho != 0D) {
+        output.WriteRawTag(57);
+        output.WriteDouble(Divrho);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (OptionValue != 0D) {
+        size += 1 + 8;
+      }
+      if (Delta != 0D) {
+        size += 1 + 8;
+      }
+      if (Gamma != 0D) {
+        size += 1 + 8;
+      }
+      if (Vega != 0D) {
+        size += 1 + 8;
+      }
+      if (Rho != 0D) {
+        size += 1 + 8;
+      }
+      if (Theta != 0D) {
+        size += 1 + 8;
+      }
+      if (Divrho != 0D) {
+        size += 1 + 8;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ValuationResults other) {
+      if (other == null) {
+        return;
+      }
+      if (other.OptionValue != 0D) {
+        OptionValue = other.OptionValue;
+      }
+      if (other.Delta != 0D) {
+        Delta = other.Delta;
+      }
+      if (other.Gamma != 0D) {
+        Gamma = other.Gamma;
+      }
+      if (other.Vega != 0D) {
+        Vega = other.Vega;
+      }
+      if (other.Rho != 0D) {
+        Rho = other.Rho;
+      }
+      if (other.Theta != 0D) {
+        Theta = other.Theta;
+      }
+      if (other.Divrho != 0D) {
+        Divrho = other.Divrho;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 9: {
+            OptionValue = input.ReadDouble();
+            break;
+          }
+          case 17: {
+            Delta = input.ReadDouble();
+            break;
+          }
+          case 25: {
+            Gamma = input.ReadDouble();
+            break;
+          }
+          case 33: {
+            Vega = input.ReadDouble();
+            break;
+          }
+          case 41: {
+            Rho = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            Theta = input.ReadDouble();
+            break;
+          }
+          case 57: {
+            Divrho = input.ReadDouble();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 9: {
+            OptionValue = input.ReadDouble();
+            break;
+          }
+          case 17: {
+            Delta = input.ReadDouble();
+            break;
+          }
+          case 25: {
+            Gamma = input.ReadDouble();
+            break;
+          }
+          case 33: {
+            Vega = input.ReadDouble();
+            break;
+          }
+          case 41: {
+            Rho = input.ReadDouble();
+            break;
+          }
+          case 49: {
+            Theta = input.ReadDouble();
+            break;
+          }
+          case 57: {
+            Divrho = input.ReadDouble();
             break;
           }
         }

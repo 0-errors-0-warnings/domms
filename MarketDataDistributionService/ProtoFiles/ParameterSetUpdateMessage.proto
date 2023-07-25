@@ -3,11 +3,12 @@ option csharp_namespace = "MarketDataDistributionService.Messages";
 import "google/protobuf/timestamp.proto";
 
 message ParameterSetUpdateMessage {
-  string ticker = 1;
+  string underlier = 1;
   double spot_px = 2;
   double volatility_pct = 3;
   double risk_free_rate_pct = 4;
   double dividend_yield_pct = 5;
-  double time = 6;
-  google.protobuf.Timestamp priceTime = 7;
+  google.protobuf.Timestamp expiry_date = 6;
+  double strike_price = 7;
+  google.protobuf.Timestamp priceTime = 8;
 }

@@ -25,16 +25,16 @@ namespace MarketDataService.Messages {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChdNYXJrZXREYXRhTWVzc2FnZS5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3Rp",
-            "bWVzdGFtcC5wcm90byLCAQoRTWFya2V0RGF0YU1lc3NhZ2USDgoGdGlja2Vy",
-            "GAEgASgJEg4KBmJpZF9weBgCIAEoARIOCgZhc2tfcHgYAyABKAESFgoOdm9s",
-            "YXRpbGl0eV9wY3QYBCABKAESGgoScmlza19mcmVlX3JhdGVfcGN0GAUgASgB",
-            "EhoKEmRpdmlkZW5kX3lpZWxkX3BjdBgGIAEoARItCglwcmljZVRpbWUYByAB",
-            "KAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQh2qAhpNYXJrZXREYXRh",
-            "U2VydmljZS5NZXNzYWdlc2IGcHJvdG8z"));
+            "bWVzdGFtcC5wcm90byLFAQoRTWFya2V0RGF0YU1lc3NhZ2USEQoJdW5kZXJs",
+            "aWVyGAEgASgJEg4KBmJpZF9weBgCIAEoARIOCgZhc2tfcHgYAyABKAESFgoO",
+            "dm9sYXRpbGl0eV9wY3QYBCABKAESGgoScmlza19mcmVlX3JhdGVfcGN0GAUg",
+            "ASgBEhoKEmRpdmlkZW5kX3lpZWxkX3BjdBgGIAEoARItCglwcmljZVRpbWUY",
+            "ByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQh2qAhpNYXJrZXRE",
+            "YXRhU2VydmljZS5NZXNzYWdlc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MarketDataService.Messages.MarketDataMessage), global::MarketDataService.Messages.MarketDataMessage.Parser, new[]{ "Ticker", "BidPx", "AskPx", "VolatilityPct", "RiskFreeRatePct", "DividendYieldPct", "PriceTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MarketDataService.Messages.MarketDataMessage), global::MarketDataService.Messages.MarketDataMessage.Parser, new[]{ "Underlier", "BidPx", "AskPx", "VolatilityPct", "RiskFreeRatePct", "DividendYieldPct", "PriceTime" }, null, null, null, null)
           }));
     }
     #endregion
@@ -75,7 +75,7 @@ namespace MarketDataService.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public MarketDataMessage(MarketDataMessage other) : this() {
-      ticker_ = other.ticker_;
+      underlier_ = other.underlier_;
       bidPx_ = other.bidPx_;
       askPx_ = other.askPx_;
       volatilityPct_ = other.volatilityPct_;
@@ -91,15 +91,15 @@ namespace MarketDataService.Messages {
       return new MarketDataMessage(this);
     }
 
-    /// <summary>Field number for the "ticker" field.</summary>
-    public const int TickerFieldNumber = 1;
-    private string ticker_ = "";
+    /// <summary>Field number for the "underlier" field.</summary>
+    public const int UnderlierFieldNumber = 1;
+    private string underlier_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Ticker {
-      get { return ticker_; }
+    public string Underlier {
+      get { return underlier_; }
       set {
-        ticker_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        underlier_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -190,7 +190,7 @@ namespace MarketDataService.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Ticker != other.Ticker) return false;
+      if (Underlier != other.Underlier) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(BidPx, other.BidPx)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(AskPx, other.AskPx)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(VolatilityPct, other.VolatilityPct)) return false;
@@ -204,7 +204,7 @@ namespace MarketDataService.Messages {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Ticker.Length != 0) hash ^= Ticker.GetHashCode();
+      if (Underlier.Length != 0) hash ^= Underlier.GetHashCode();
       if (BidPx != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(BidPx);
       if (AskPx != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(AskPx);
       if (VolatilityPct != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(VolatilityPct);
@@ -229,9 +229,9 @@ namespace MarketDataService.Messages {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Ticker.Length != 0) {
+      if (Underlier.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Ticker);
+        output.WriteString(Underlier);
       }
       if (BidPx != 0D) {
         output.WriteRawTag(17);
@@ -267,9 +267,9 @@ namespace MarketDataService.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Ticker.Length != 0) {
+      if (Underlier.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Ticker);
+        output.WriteString(Underlier);
       }
       if (BidPx != 0D) {
         output.WriteRawTag(17);
@@ -305,8 +305,8 @@ namespace MarketDataService.Messages {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Ticker.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Ticker);
+      if (Underlier.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Underlier);
       }
       if (BidPx != 0D) {
         size += 1 + 8;
@@ -338,8 +338,8 @@ namespace MarketDataService.Messages {
       if (other == null) {
         return;
       }
-      if (other.Ticker.Length != 0) {
-        Ticker = other.Ticker;
+      if (other.Underlier.Length != 0) {
+        Underlier = other.Underlier;
       }
       if (other.BidPx != 0D) {
         BidPx = other.BidPx;
@@ -378,7 +378,7 @@ namespace MarketDataService.Messages {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            Ticker = input.ReadString();
+            Underlier = input.ReadString();
             break;
           }
           case 17: {
@@ -424,7 +424,7 @@ namespace MarketDataService.Messages {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            Ticker = input.ReadString();
+            Underlier = input.ReadString();
             break;
           }
           case 17: {

@@ -1,4 +1,5 @@
 ﻿using CalcEngineService.Caches;
+using CalcEngineService.Calculators;
 using CalcEngineService.Configs;
 using CalcEngineService.Messages;
 using Google.Protobuf;
@@ -14,22 +15,30 @@ public class CalcEngineServiceHandler : IServiceHandler
 {
     private readonly ILogger<CalcEngineServiceHandler> _logger;
     private readonly AppParamsConfiguration _appParamsConfiguration;
+    private readonly List<MeshConfigSetConfiguration> _meshConfigSetConfiguration;
     private readonly IParameterSetUpdateCache _parameterSetUpdateCache;
+    private readonly IMeshConfigSetCache _meshConfigSetCache;
     private Channel<ParameterSetUpdateMessage> _inboundChannel;
     private Channel<ParameterSetMeshUpdateMessage> _outboundChannel;
     private List<Task> _processorTaskList;
 
     public CalcEngineServiceHandler(ILogger<CalcEngineServiceHandler> logger, 
         IOptions<AppParamsConfiguration> appParamsConfigurationOption,
-        IParameterSetUpdateCache parameterSetUpdateCache)
+        IOptions<List<MeshConfigSetConfiguration>> meshConfigSetConfiguration,
+        IParameterSetUpdateCache parameterSetUpdateCache,
+        IMeshConfigSetCache meshConfigSetCache)
     {
         _logger = logger;
         _appParamsConfiguration = appParamsConfigurationOption.Value;
+        _meshConfigSetConfiguration = meshConfigSetConfiguration.Value;
         _parameterSetUpdateCache = parameterSetUpdateCache;
 
         _inboundChannel = Channel.CreateBounded<ParameterSetUpdateMessage>(_appParamsConfiguration.ReceiveMessageCapacity);
         _outboundChannel = Channel.CreateBounded<ParameterSetMeshUpdateMessage>(_appParamsConfiguration.SendMessageCapacity);
         _processorTaskList = new List<Task>();
+
+        _meshConfigSetCache = meshConfigSetCache;
+        BuildInitialParameterMeshConfigSet();
     }
 
     public async Task StartAsync(CancellationToken stoppingToken)
@@ -37,7 +46,7 @@ public class CalcEngineServiceHandler : IServiceHandler
         // start processor tasks
         for (int i = 0; i < _appParamsConfiguration.NumOfThreads; i++)
         {
-            _processorTaskList.Add(Task.Run(() => ProcessMarketDataMessage(stoppingToken), stoppingToken));
+            _processorTaskList.Add(Task.Run(() => ProcessParameterSetUpdateMessage(stoppingToken), stoppingToken));
         }
 
         using var runtime = new NetMQRuntime();
@@ -94,7 +103,8 @@ public class CalcEngineServiceHandler : IServiceHandler
         while (!stoppingToken.IsCancellationRequested)
         {
             var parameterSetMeshUpdateMessage = await readFromChannel(stoppingToken);
-            _logger.LogInformation("sending: {Ticker} ", parameterSetMeshUpdateMessage.Ticker);
+            _logger.LogInformation("sending: {Underlier}, Items: {Count}", parameterSetMeshUpdateMessage.Underlier, 
+                parameterSetMeshUpdateMessage.ParameterSetList.Count);
             pubSocket.SendMoreFrame(topic).SendFrame(parameterSetMeshUpdateMessage.ToByteArray());
         }
     }
@@ -111,13 +121,16 @@ public class CalcEngineServiceHandler : IServiceHandler
         return await _outboundChannel.Reader.ReadAsync(stoppingToken);
     }
 
-    private async void ProcessMarketDataMessage(CancellationToken stoppingToken)
+    private async void ProcessParameterSetUpdateMessage(CancellationToken stoppingToken)
     {
         //TODO: pick the latest message
         while (!stoppingToken.IsCancellationRequested)
         {
             var parameterSetUpdateMessage = await _inboundChannel.Reader.ReadAsync(stoppingToken);
+
+            // Update Parameter Set cache
             _parameterSetUpdateCache.UpdateParameterSet(parameterSetUpdateMessage);
+
             var parameterSetMeshUpdateMessage = GetParameterSetMeshUpdateMessage(parameterSetUpdateMessage);
             await _outboundChannel.Writer.WriteAsync(parameterSetMeshUpdateMessage);
         }
@@ -125,12 +138,115 @@ public class CalcEngineServiceHandler : IServiceHandler
 
     private ParameterSetMeshUpdateMessage GetParameterSetMeshUpdateMessage(ParameterSetUpdateMessage parameterSetUpdateMessage)
     {
-        //TODO: fill this
-        //TODO: sample message below
-        return new ParameterSetMeshUpdateMessage()
+        ParameterSetMeshUpdateMessage result = new()
         {
-            Ticker = parameterSetUpdateMessage.Ticker,
-            PriceTime = parameterSetUpdateMessage.PriceTime,
+            Underlier = parameterSetUpdateMessage.Underlier,
+            PriceTime = parameterSetUpdateMessage.PriceTime
         };
+
+        PopulateParameterSetDimensions(result, parameterSetUpdateMessage);
+
+        PopulateOptionPrices(result);
+
+        return result;
+    }
+
+    private void PopulateParameterSetDimensions(ParameterSetMeshUpdateMessage result, ParameterSetUpdateMessage parameterSetUpdateMessage)
+    {
+        //top of the list should be current values
+        var firstParamSet = new ParameterSet()
+        {
+            Id = 0,
+            SpotPx = parameterSetUpdateMessage.SpotPx,
+            VolatilityPct = parameterSetUpdateMessage.VolatilityPct,
+            RiskFreeRatePct = parameterSetUpdateMessage.RiskFreeRatePct,
+            DividendYieldPct = parameterSetUpdateMessage.DividendYieldPct,
+            MaturityTimeYrs = (parameterSetUpdateMessage.ExpiryDate.ToDateTime() - DateTime.Today).TotalDays / 365.0,
+            StrikePrice = parameterSetUpdateMessage.StrikePrice,
+            CallValuationResults = new ValuationResults(),
+            PutValuationResults = new ValuationResults(),
+        };
+
+        result.ParameterSetList.Add(firstParamSet);
+
+        //now iterate over all
+        PopulateRemainingValues(result, parameterSetUpdateMessage);
+    }
+
+    private void PopulateRemainingValues(ParameterSetMeshUpdateMessage result, ParameterSetUpdateMessage parameterSetUpdateMessage)
+    {
+        var underlierConfigSet = _meshConfigSetCache.GetCurrentConfigSet(parameterSetUpdateMessage.Underlier);
+        if (underlierConfigSet == null)
+        {
+            _logger.LogError("underlierConfigSet not found for {Underlier}", result.Underlier);
+            return;
+        }
+
+        var currentSpotPx = parameterSetUpdateMessage.SpotPx;
+        var currentVolatilityPct = parameterSetUpdateMessage.VolatilityPct;
+        var currentRiskFreeRatePct = parameterSetUpdateMessage.RiskFreeRatePct;
+        var currentDividendYieldPct = parameterSetUpdateMessage.DividendYieldPct;
+        var currentTime = (parameterSetUpdateMessage.ExpiryDate.ToDateTime() - DateTime.Today).TotalDays/365.0;
+        var arrayIndex = 1;
+
+        var spotHalfRange = underlierConfigSet.SpotRangePct / 2.0;
+        var lowerSpot = currentSpotPx - spotHalfRange;
+        var upperSpot = currentSpotPx + spotHalfRange;
+        for (var newSpotPx = lowerSpot; newSpotPx <= upperSpot; newSpotPx += underlierConfigSet.SpotStepSizePct)
+        {
+            if (newSpotPx <= 0)
+            {
+                continue;
+            }
+
+            var volHalfRange = underlierConfigSet.VolRangePct / 2.0;
+            var lowerVol = currentVolatilityPct - volHalfRange;
+            var upperVol = currentVolatilityPct + volHalfRange;
+            for (var newVolPct = lowerVol; newVolPct <= upperVol; newVolPct += underlierConfigSet.VolStepSizePct)
+            {
+                if (newVolPct < 0)
+                {
+                    continue;
+                }
+
+                var rateHalfRange = underlierConfigSet.RateRangePct / 2.0;
+                var lowerRate = currentRiskFreeRatePct - rateHalfRange;
+                var upperRate = currentRiskFreeRatePct + rateHalfRange;
+                for (var newRatePct = lowerRate; newRatePct <= upperRate; newRatePct += underlierConfigSet.RateStepSizePct)
+                {
+                    if (newRatePct < 0)
+                    {
+                        continue;
+                    }
+
+                    var paramSet = new ParameterSet()
+                    {
+                        Id = arrayIndex++,
+                        SpotPx = newSpotPx,
+                        VolatilityPct = newVolPct,
+                        RiskFreeRatePct = newRatePct,
+                        DividendYieldPct = currentDividendYieldPct,
+                        MaturityTimeYrs = currentTime,
+                        CallValuationResults = new ValuationResults(),
+                        PutValuationResults = new ValuationResults(),
+                    };
+
+                    result.ParameterSetList.Add(paramSet);
+                }
+            }
+        }
+    }
+
+    private void PopulateOptionPrices(ParameterSetMeshUpdateMessage result)
+    {
+        Parallel.ForEach(result.ParameterSetList, OptionPriceCalculator.CalculateOptionPriceAndGreeks);
+    }
+
+    private void BuildInitialParameterMeshConfigSet()
+    {
+        foreach(var underlierConfig in _meshConfigSetConfiguration)
+        {
+            _meshConfigSetCache.UpdateConfigSet(underlierConfig);
+        }
     }
 }

@@ -1,5 +1,5 @@
 ECHO OFF
-SET PROTO_BIN_PATH=C:\Users\tatas\Documents\dev\git_repos\bitbucket\csharp-projects\CodingExercises\Millennium\protoc-23.4-win64\bin
+SET PROTO_BIN_PATH=C:\Users\tata\Documents\dev\domms\protoc-23.4-win64\bin
 
 ECHO MarketDataService...
 %PROTO_BIN_PATH%\protoc.exe -I=MarketDataService\ProtoFiles --csharp_out=MarketDataService\Messages             MarketDataService\ProtoFiles\MarketDataMessage.proto

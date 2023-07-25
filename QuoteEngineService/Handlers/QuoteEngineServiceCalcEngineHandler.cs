@@ -6,14 +6,14 @@ using System.Threading.Channels;
 
 namespace QuoteEngineService.Handlers;
 
-public class QuoteEngineServiceUnderlyingHandler : IUnderlyingServiceHandler
+public class QuoteEngineServiceCalcEngineHandler : IUnderlyingServiceHandler
 {
-    private readonly ILogger<QuoteEngineServiceUnderlyingHandler> _logger;
+    private readonly ILogger<QuoteEngineServiceCalcEngineHandler> _logger;
     private readonly ZeroMqReceiveParamsConfiguration _zeroMqReceiveParamsConfiguration;
     private Channel<ParameterSetMeshUpdateMessage> _inboundChannel;
     private List<Task> _processorTaskList;
 
-    public QuoteEngineServiceUnderlyingHandler(ILogger<QuoteEngineServiceUnderlyingHandler> logger, 
+    public QuoteEngineServiceCalcEngineHandler(ILogger<QuoteEngineServiceCalcEngineHandler> logger, 
         ZeroMqReceiveParamsConfiguration zeroMqReceiveParamsConfiguration)
     {
         _logger = logger;
@@ -87,10 +87,12 @@ public class QuoteEngineServiceUnderlyingHandler : IUnderlyingServiceHandler
 
             count++;
 
+            _logger.LogInformation("parameterSetMeshUpdateMessage: {Underlier}, PriceTime: {PriceTime}, Items: {Count}",
+                parameterSetMeshUpdateMessage.Underlier, parameterSetMeshUpdateMessage.PriceTime, parameterSetMeshUpdateMessage.ParameterSetList.Count);
             if (count % 50000 == 0)
             {
-                _logger.LogInformation("parameterSetMeshUpdateMessage: {Ticker}, PriceTime: {PriceTime}",
-                    parameterSetMeshUpdateMessage.Ticker, parameterSetMeshUpdateMessage.PriceTime);
+                _logger.LogInformation("parameterSetMeshUpdateMessage: {Underlier}, PriceTime: {PriceTime}, Items: {Count}",
+                    parameterSetMeshUpdateMessage.Underlier, parameterSetMeshUpdateMessage.PriceTime, parameterSetMeshUpdateMessage.ParameterSetList.Count);
             }
             //TODO: update PS via double buffering
             //TODO: publish

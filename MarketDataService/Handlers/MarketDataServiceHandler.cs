@@ -47,7 +47,7 @@ public class MarketDataServiceHandler : IServiceHandler
         while(!stoppingToken.IsCancellationRequested)
         {
             var marketDataMessage = GetMarketDataMessage();
-            _logger.LogInformation("sending: {Ticker}, Price:{PriceTime} ", marketDataMessage.Ticker, marketDataMessage.PriceTime);
+            _logger.LogInformation("sending: {Underlier}, Price:{PriceTime} ", marketDataMessage.Underlier, marketDataMessage.PriceTime);
 
             pubSocket.SendMoreFrame(_appParamsConfiguration.ZeroMqSendTopic).SendFrame(marketDataMessage.ToByteArray());
 
@@ -60,10 +60,10 @@ public class MarketDataServiceHandler : IServiceHandler
 
     private MarketDataMessage GetMarketDataMessage()
     {
-        var (ticker, bidPx, askPx, priceTime) = _priceGenerator.GetPrice();
+        var (underlier, bidPx, askPx, priceTime) = _priceGenerator.GetPrice();
         return new MarketDataMessage
         {
-            Ticker = ticker,
+            Underlier = underlier,
             BidPx = bidPx,
             AskPx = askPx,
             VolatilityPct = _volGenerator.GetVolPct(),
