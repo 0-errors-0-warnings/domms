@@ -7,6 +7,7 @@ using MarketDataDistributionService.Messages;
 using Microsoft.Extensions.Options;
 using NetMQ;
 using NetMQ.Sockets;
+using System.Diagnostics;
 using System.Threading.Channels;
 
 namespace CalcEngineService.Handlers;
@@ -20,7 +21,9 @@ public class CalcEngineServiceHandler : IServiceHandler
     private readonly IMeshConfigSetCache _meshConfigSetCache;
     private Channel<ParameterSetUpdateMessage> _inboundChannel;
     private Channel<ParameterSetMeshUpdateMessage> _outboundChannel;
-    private List<Task> _processorTaskList;
+    private List<Task> _processorTaskList = new();
+    private readonly Stopwatch _stopwatch = new();
+
 
     public CalcEngineServiceHandler(ILogger<CalcEngineServiceHandler> logger, 
         IOptions<AppParamsConfiguration> appParamsConfigurationOption,
@@ -35,7 +38,6 @@ public class CalcEngineServiceHandler : IServiceHandler
 
         _inboundChannel = Channel.CreateBounded<ParameterSetUpdateMessage>(_appParamsConfiguration.ReceiveMessageCapacity);
         _outboundChannel = Channel.CreateBounded<ParameterSetMeshUpdateMessage>(_appParamsConfiguration.SendMessageCapacity);
-        _processorTaskList = new List<Task>();
 
         _meshConfigSetCache = meshConfigSetCache;
         BuildInitialParameterMeshConfigSet();
@@ -103,8 +105,8 @@ public class CalcEngineServiceHandler : IServiceHandler
         while (!stoppingToken.IsCancellationRequested)
         {
             var parameterSetMeshUpdateMessage = await readFromChannel(stoppingToken);
-            _logger.LogInformation("sending: {Underlier}, Items: {Count}", parameterSetMeshUpdateMessage.Underlier, 
-                parameterSetMeshUpdateMessage.ParameterSetList.Count);
+            _logger.LogInformation("sending: {Underlier}, Items: {Count}, PriceTime:{PriceTime}", parameterSetMeshUpdateMessage.Underlier, 
+                parameterSetMeshUpdateMessage.ParameterSetList.Count, parameterSetMeshUpdateMessage.PriceTime);
             pubSocket.SendMoreFrame(topic).SendFrame(parameterSetMeshUpdateMessage.ToByteArray());
         }
     }
@@ -131,7 +133,13 @@ public class CalcEngineServiceHandler : IServiceHandler
             // Update Parameter Set cache
             _parameterSetUpdateCache.UpdateParameterSet(parameterSetUpdateMessage);
 
+            _stopwatch.Restart();
             var parameterSetMeshUpdateMessage = GetParameterSetMeshUpdateMessage(parameterSetUpdateMessage);
+            _stopwatch.Stop();
+
+            _logger.LogInformation("Processed: {Underlier}, Items: {Count}, TimeTaken: {TimeTaken} ms", parameterSetMeshUpdateMessage.Underlier,
+                parameterSetMeshUpdateMessage.ParameterSetList.Count, _stopwatch.ElapsedTicks / (double)Stopwatch.Frequency * 1000);
+
             await _outboundChannel.Writer.WriteAsync(parameterSetMeshUpdateMessage);
         }
     }

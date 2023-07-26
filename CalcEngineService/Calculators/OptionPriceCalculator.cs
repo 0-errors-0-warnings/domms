@@ -20,15 +20,22 @@ public static class OptionPriceCalculator
         var deltaCallOption1 = (newCallOptionValue1 - callOptionValue) / epsilon;
         var deltaPutOption1 = (newPutOptionValue1 - putOptionValue) / epsilon;
 
-        var change2 = 0.02;
-
         //gamma
-        var (newCallOptionValue2, newPutOptionValue2) =
-            CalculateOptionPrice(paramSet.SpotPx + change2, paramSet.StrikePrice, paramSet.RiskFreeRatePct,
+        var newSpotPx = 1.1 * paramSet.SpotPx;
+        var (newCallOptionValue1_1, newPutOptionValue1_1) =
+            CalculateOptionPrice(newSpotPx, paramSet.StrikePrice, paramSet.RiskFreeRatePct,
             paramSet.DividendYieldPct, paramSet.VolatilityPct, paramSet.MaturityTimeYrs);
 
-        var deltaCallOption2 = (newCallOptionValue2 - newCallOptionValue1) / change2;
-        var deltaPutOption2 = (newPutOptionValue2 - newPutOptionValue1) / change2;
+        //delta 2
+        var (newCallOptionValue1_2, newPutOptionValue1_2) =
+            CalculateOptionPrice(newSpotPx + epsilon, paramSet.StrikePrice, paramSet.RiskFreeRatePct,
+            paramSet.DividendYieldPct, paramSet.VolatilityPct, paramSet.MaturityTimeYrs);
+
+        var deltaCallOption1_1 = (newCallOptionValue1_2 - newCallOptionValue1_1) / epsilon;
+        var deltaPutOption1_1 = (newPutOptionValue1_2 - newPutOptionValue1_1) / epsilon;
+
+        var gammaCallOption = (deltaCallOption1_1 - deltaCallOption1) / (newSpotPx - paramSet.SpotPx);
+        var gammaPutOption = (deltaPutOption1_1 - deltaPutOption1) / (newSpotPx - paramSet.SpotPx);
 
         //vega
         var (newCallOptionValue3, newPutOptionValue3) =
@@ -51,8 +58,8 @@ public static class OptionPriceCalculator
             CalculateOptionPrice(paramSet.SpotPx, paramSet.StrikePrice, paramSet.RiskFreeRatePct,
             paramSet.DividendYieldPct, paramSet.VolatilityPct, paramSet.MaturityTimeYrs + epsilon);
 
-        var thetaCallOption = (newCallOptionValue5 - callOptionValue) / epsilon;
-        var thetaPutOption = (newPutOptionValue5 - putOptionValue) / epsilon;
+        var thetaCallOption = (callOptionValue - newCallOptionValue5) / (epsilon * 365);
+        var thetaPutOption = (putOptionValue - newPutOptionValue5) / (epsilon * 365);
 
         //divRho
         var (newCallOptionValue6, newPutOptionValue6) =
@@ -65,7 +72,7 @@ public static class OptionPriceCalculator
 
         paramSet.CallValuationResults.OptionValue = callOptionValue;
         paramSet.CallValuationResults.Delta = deltaCallOption1;
-        paramSet.CallValuationResults.Gamma = (deltaCallOption2 - deltaCallOption1) / (change2 - epsilon);
+        paramSet.CallValuationResults.Gamma = gammaCallOption;
         paramSet.CallValuationResults.Vega = vegaCallOption;
         paramSet.CallValuationResults.Rho = rhoCallOption;
         paramSet.CallValuationResults.Theta = thetaCallOption;
@@ -73,7 +80,7 @@ public static class OptionPriceCalculator
 
         paramSet.PutValuationResults.OptionValue = putOptionValue;
         paramSet.PutValuationResults.Delta = deltaPutOption1;
-        paramSet.PutValuationResults.Gamma = (deltaPutOption2 - deltaPutOption1) / (change2 - epsilon);
+        paramSet.PutValuationResults.Gamma = gammaPutOption;
         paramSet.PutValuationResults.Vega = vegaPutOption;
         paramSet.PutValuationResults.Rho = rhoPutOption;
         paramSet.PutValuationResults.Theta = thetaPutOption;
@@ -83,14 +90,14 @@ public static class OptionPriceCalculator
     private static (double, double) CalculateOptionPrice(double spotPx, double strikePrice, double riskFreeRatePct,
         double dividendYieldPct, double volatilityPct, double maturityTimeYrs)
     {
-        var spotOverStrike = GetSpotOverStrike(spotPx, strikePrice);
+        var logSpotOverStrike = GetSpotOverStrike(spotPx, strikePrice);
         var rateMinusDivYield = GetRateMinusDivYield(riskFreeRatePct, dividendYieldPct);
         var halfVolSquare = GetHalfVolSquare(volatilityPct);
         var volSqrtTime = GetVolSqrtTime(volatilityPct, maturityTimeYrs);
         var expDivYieldMaturity = GetExpDivYieldMaturity(dividendYieldPct, maturityTimeYrs);
         var expRateMaturity = GetExpRateMaturity(riskFreeRatePct, maturityTimeYrs);
 
-        var d1 = (Math.Log(spotOverStrike) + (rateMinusDivYield + halfVolSquare) * maturityTimeYrs) / volSqrtTime;
+        var d1 = (logSpotOverStrike + (rateMinusDivYield + halfVolSquare) * maturityTimeYrs) / volSqrtTime;
         var d2 = d1 - volSqrtTime;
 
         var callOptionValue = spotPx * expDivYieldMaturity * CND(d1) - strikePrice * expRateMaturity * CND(d2);

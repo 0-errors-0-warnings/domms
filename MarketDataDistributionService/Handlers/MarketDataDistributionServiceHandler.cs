@@ -133,7 +133,7 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
             VolatilityPct = marketDataMessage.VolatilityPct,
             RiskFreeRatePct = marketDataMessage.RiskFreeRatePct,
             DividendYieldPct = marketDataMessage.DividendYieldPct,
-            ExpiryDate = DateTime.Today.AddDays(optionStaticData.OptionExpiryDateInDays).ToTimestamp(),
+            ExpiryDate = DateTime.UtcNow.AddDays(optionStaticData.OptionExpiryDateInDays).ToTimestamp(),
             StrikePrice = optionStaticData.StrikePrice,
             PriceTime = marketDataMessage.PriceTime
         };
