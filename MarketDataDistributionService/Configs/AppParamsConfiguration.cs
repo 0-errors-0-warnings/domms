@@ -10,5 +10,4 @@ public class AppParamsConfiguration
     public int ZeroMqSendPort { get; set; }
     public string ZeroMqSendTopicPrefix { get; set; }
     public int SendMessageCapacity { get; set; }
-    public int NumOfThreads { get; set; }
 }

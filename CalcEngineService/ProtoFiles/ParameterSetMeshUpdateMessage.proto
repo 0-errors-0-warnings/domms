@@ -5,7 +5,10 @@ import "google/protobuf/timestamp.proto";
 message ParameterSetMeshUpdateMessage {
   string underlier = 1;
   google.protobuf.Timestamp priceTime = 2;
-  repeated ParameterSet ParameterSetList = 3;
+  repeated double spot_mesh_param_vector = 3;
+  repeated double vol_mesh_param_vector = 4;
+  repeated double rate_mesh_param_vector = 5;
+  repeated ParameterSet ParameterSetList = 6;
 }
 
 message ParameterSet {

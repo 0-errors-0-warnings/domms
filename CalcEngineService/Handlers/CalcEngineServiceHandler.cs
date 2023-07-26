@@ -2,6 +2,7 @@
 using CalcEngineService.Calculators;
 using CalcEngineService.Configs;
 using CalcEngineService.Messages;
+using CalcEngineService.Queues;
 using Google.Protobuf;
 using MarketDataDistributionService.Messages;
 using Microsoft.Extensions.Options;
@@ -21,7 +22,7 @@ public class CalcEngineServiceHandler : IServiceHandler
     private readonly IMeshConfigSetCache _meshConfigSetCache;
     private Channel<ParameterSetUpdateMessage> _inboundChannel;
     private Channel<ParameterSetMeshUpdateMessage> _outboundChannel;
-    private List<Task> _processorTaskList = new();
+    private readonly CustomMessageQueue<ParameterSetUpdateMessage> _customMessageQueue = new();
     private readonly Stopwatch _stopwatch = new();
 
 
@@ -46,10 +47,8 @@ public class CalcEngineServiceHandler : IServiceHandler
     public async Task StartAsync(CancellationToken stoppingToken)
     {
         // start processor tasks
-        for (int i = 0; i < _appParamsConfiguration.NumOfThreads; i++)
-        {
-            _processorTaskList.Add(Task.Run(() => ProcessParameterSetUpdateMessage(stoppingToken), stoppingToken));
-        }
+        var inboundChannelProcessor = Task.Run(() => ProcessInboundChannelMessages(stoppingToken), stoppingToken);
+        var paramSetProcessor = Task.Run(() => ProcessParameterSetUpdateMessage(stoppingToken), stoppingToken);
 
         using var runtime = new NetMQRuntime();
         runtime.Run(stoppingToken,
@@ -66,7 +65,7 @@ public class CalcEngineServiceHandler : IServiceHandler
             _appParamsConfiguration.SendMessageCapacity,
             ReadFromOutbound));
 
-        await Task.WhenAll(_processorTaskList);
+        await Task.WhenAll(inboundChannelProcessor, paramSetProcessor);
     }
 
     #region zeromq calls - abstract this out later
@@ -123,17 +122,33 @@ public class CalcEngineServiceHandler : IServiceHandler
         return await _outboundChannel.Reader.ReadAsync(stoppingToken);
     }
 
-    private async void ProcessParameterSetUpdateMessage(CancellationToken stoppingToken)
+
+    private async void ProcessInboundChannelMessages(CancellationToken stoppingToken)
     {
-        //TODO: pick the latest message
+        //pick the latest message
         while (!stoppingToken.IsCancellationRequested)
         {
             var parameterSetUpdateMessage = await _inboundChannel.Reader.ReadAsync(stoppingToken);
+            _customMessageQueue.Enqueue(parameterSetUpdateMessage.Underlier, parameterSetUpdateMessage);
+        }
+    }
 
+
+    private async void ProcessParameterSetUpdateMessage(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var parameterSetUpdateMessage = _customMessageQueue.Dequeue();
+
+            if(parameterSetUpdateMessage == null)
+            {
+                continue;
+            }
+
+            _stopwatch.Restart();
             // Update Parameter Set cache
             _parameterSetUpdateCache.UpdateParameterSet(parameterSetUpdateMessage);
 
-            _stopwatch.Restart();
             var parameterSetMeshUpdateMessage = GetParameterSetMeshUpdateMessage(parameterSetUpdateMessage);
             _stopwatch.Stop();
 
@@ -200,6 +215,7 @@ public class CalcEngineServiceHandler : IServiceHandler
         var spotHalfRange = underlierConfigSet.SpotRangePct / 2.0;
         var lowerSpot = currentSpotPx - spotHalfRange;
         var upperSpot = currentSpotPx + spotHalfRange;
+        result.SpotMeshParamVector.Clear();
         for (var newSpotPx = lowerSpot; newSpotPx <= upperSpot; newSpotPx += underlierConfigSet.SpotStepSizePct)
         {
             if (newSpotPx <= 0)
@@ -207,9 +223,11 @@ public class CalcEngineServiceHandler : IServiceHandler
                 continue;
             }
 
+            result.SpotMeshParamVector.Add(newSpotPx);
             var volHalfRange = underlierConfigSet.VolRangePct / 2.0;
             var lowerVol = currentVolatilityPct - volHalfRange;
             var upperVol = currentVolatilityPct + volHalfRange;
+            result.VolMeshParamVector.Clear();
             for (var newVolPct = lowerVol; newVolPct <= upperVol; newVolPct += underlierConfigSet.VolStepSizePct)
             {
                 if (newVolPct < 0)
@@ -217,9 +235,11 @@ public class CalcEngineServiceHandler : IServiceHandler
                     continue;
                 }
 
+                result.VolMeshParamVector.Add(newVolPct);
                 var rateHalfRange = underlierConfigSet.RateRangePct / 2.0;
                 var lowerRate = currentRiskFreeRatePct - rateHalfRange;
                 var upperRate = currentRiskFreeRatePct + rateHalfRange;
+                result.RateMeshParamVector.Clear();
                 for (var newRatePct = lowerRate; newRatePct <= upperRate; newRatePct += underlierConfigSet.RateStepSizePct)
                 {
                     if (newRatePct < 0)
@@ -227,6 +247,7 @@ public class CalcEngineServiceHandler : IServiceHandler
                         continue;
                     }
 
+                    result.RateMeshParamVector.Add(newRatePct);
                     var paramSet = new ParameterSet()
                     {
                         Id = arrayIndex++,

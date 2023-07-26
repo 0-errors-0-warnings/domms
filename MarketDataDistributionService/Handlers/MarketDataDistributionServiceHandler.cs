@@ -2,6 +2,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using MarketDataDistributionService.Configs;
 using MarketDataDistributionService.Messages;
+using MarketDataDistributionService.Queues;
 using MarketDataService.Messages;
 using Microsoft.Extensions.Options;
 using NetMQ;
@@ -17,7 +18,8 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
     private readonly Dictionary<string, OptionStaticDataConfiguration> _optionStaticDataConfigurationDict;
     private Channel<MarketDataMessage> _inboundChannel;
     private Channel<ParameterSetUpdateMessage> _outboundChannel;
-    private List<Task> _processorTaskList;
+    private readonly CustomMessageQueue<MarketDataMessage> _customMessageQueue = new();
+
 
     public MarketDataDistributionServiceHandler(ILogger<MarketDataDistributionServiceHandler> logger, 
         IOptions<AppParamsConfiguration> appParamsConfigurationOption,
@@ -28,16 +30,13 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
         _optionStaticDataConfigurationDict = optionStaticDataConfigurationListOption.Value.ToDictionary(x => x.Underlier);
         _inboundChannel = Channel.CreateBounded<MarketDataMessage>(_appParamsConfiguration.ReceiveMessageCapacity);
         _outboundChannel = Channel.CreateBounded<ParameterSetUpdateMessage>(_appParamsConfiguration.SendMessageCapacity);
-        _processorTaskList = new List<Task>();
     }
 
     public async Task StartAsync(CancellationToken stoppingToken)
     {
-        // start processor tasks
-        for (int i = 0; i < _appParamsConfiguration.NumOfThreads; i++)
-        {
-            _processorTaskList.Add(Task.Run(() => ProcessMarketDataMessage(stoppingToken), stoppingToken));
-        }
+        // start processor task
+        var inboundChannelProcessor = Task.Run(() => ProcessInboundChannelMessages(stoppingToken), stoppingToken);
+        var marketDataMessageProcessor = Task.Run(() => ProcessMarketDataMessage(stoppingToken), stoppingToken);
 
         using var runtime = new NetMQRuntime();
         runtime.Run(stoppingToken, 
@@ -54,7 +53,7 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
             _appParamsConfiguration.SendMessageCapacity,
             ReadFromOutbound));
 
-        await Task.WhenAll(_processorTaskList);
+        await Task.WhenAll(inboundChannelProcessor, marketDataMessageProcessor);
     }
 
     #region zeromq calls - abstract this out later
@@ -113,11 +112,28 @@ public class MarketDataDistributionServiceHandler : IServiceHandler
         return msg;
     }
 
+    private async void ProcessInboundChannelMessages(CancellationToken stoppingToken)
+    {
+        //pick the latest message
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var marketDataMessage = await _inboundChannel.Reader.ReadAsync(stoppingToken);
+            _customMessageQueue.Enqueue(marketDataMessage.Underlier, marketDataMessage);
+        }
+    }
+
+
     private async void ProcessMarketDataMessage(CancellationToken stoppingToken)
     {
         while(!stoppingToken.IsCancellationRequested)
         {
-            var marketDataMessage = await _inboundChannel.Reader.ReadAsync(stoppingToken);
+            var marketDataMessage = _customMessageQueue.Dequeue();
+
+            if (marketDataMessage == null)
+            {
+                continue;
+            }
+
             var parameterSetUpdateMessage = GetParameterSetUpdateMessage(marketDataMessage);
             await _outboundChannel.Writer.WriteAsync(parameterSetUpdateMessage);
         }

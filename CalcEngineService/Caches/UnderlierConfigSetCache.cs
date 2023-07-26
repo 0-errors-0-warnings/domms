@@ -44,16 +44,26 @@ public class UnderlierConfigSetCache
         {
             _currentIndex = _currentIndex == 0 ? 1 : 0;
             _currentUnderlierConfigSet[_currentIndex].Underlier = meshConfigSetConfiguration.Underlier;
+
             _currentUnderlierConfigSet[_currentIndex].SpotRangePct = meshConfigSetConfiguration.SpotRangePct;
             _currentUnderlierConfigSet[_currentIndex].SpotStepSizePct = meshConfigSetConfiguration.SpotStepSizePct;
+            _currentUnderlierConfigSet[_currentIndex].SpotStride = meshConfigSetConfiguration.SpotStride;
+
             _currentUnderlierConfigSet[_currentIndex].VolRangePct = meshConfigSetConfiguration.VolRangePct;
             _currentUnderlierConfigSet[_currentIndex].VolStepSizePct = meshConfigSetConfiguration.VolStepSizePct;
+            _currentUnderlierConfigSet[_currentIndex].VolStride = meshConfigSetConfiguration.VolStride;
+
             _currentUnderlierConfigSet[_currentIndex].RateRangePct = meshConfigSetConfiguration.RateRangePct;
             _currentUnderlierConfigSet[_currentIndex].RateStepSizePct = meshConfigSetConfiguration.RateStepSizePct;
+            _currentUnderlierConfigSet[_currentIndex].RateStride = meshConfigSetConfiguration.RateStride;
+
             _currentUnderlierConfigSet[_currentIndex].DivRangePct = meshConfigSetConfiguration.DivRangePct;
             _currentUnderlierConfigSet[_currentIndex].DivStepSizePct = meshConfigSetConfiguration.DivStepSizePct;
+            _currentUnderlierConfigSet[_currentIndex].DivStride = meshConfigSetConfiguration.DivStride;
+
             _currentUnderlierConfigSet[_currentIndex].TimeRangeMins= meshConfigSetConfiguration.TimeRangeMins;
             _currentUnderlierConfigSet[_currentIndex].TimeStepSizeMins = meshConfigSetConfiguration.TimeStepSizeMins;
+            _currentUnderlierConfigSet[_currentIndex].TimeStride = meshConfigSetConfiguration.TimeStride;
         }
     }
 }

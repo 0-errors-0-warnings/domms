@@ -25,24 +25,26 @@ namespace CalcEngineService.Messages {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiNQYXJhbWV0ZXJTZXRNZXNoVXBkYXRlTWVzc2FnZS5wcm90bxofZ29vZ2xl",
-            "L3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90byKKAQodUGFyYW1ldGVyU2V0TWVz",
+            "L3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90byLpAQodUGFyYW1ldGVyU2V0TWVz",
             "aFVwZGF0ZU1lc3NhZ2USEQoJdW5kZXJsaWVyGAEgASgJEi0KCXByaWNlVGlt",
-            "ZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASJwoQUGFyYW1l",
-            "dGVyU2V0TGlzdBgDIAMoCzINLlBhcmFtZXRlclNldCKNAgoMUGFyYW1ldGVy",
-            "U2V0EgoKAmlkGAEgASgFEg8KB3Nwb3RfcHgYAiABKAESFgoOdm9sYXRpbGl0",
-            "eV9wY3QYAyABKAESGgoScmlza19mcmVlX3JhdGVfcGN0GAQgASgBEhoKEmRp",
-            "dmlkZW5kX3lpZWxkX3BjdBgFIAEoARIZChFtYXR1cml0eV90aW1lX3lycxgG",
-            "IAEoARIUCgxzdHJpa2VfcHJpY2UYByABKAESLwoUQ2FsbFZhbHVhdGlvblJl",
-            "c3VsdHMYCCABKAsyES5WYWx1YXRpb25SZXN1bHRzEi4KE1B1dFZhbHVhdGlv",
-            "blJlc3VsdHMYCSABKAsyES5WYWx1YXRpb25SZXN1bHRzIoABChBWYWx1YXRp",
-            "b25SZXN1bHRzEhQKDG9wdGlvbl92YWx1ZRgBIAEoARINCgVkZWx0YRgCIAEo",
-            "ARINCgVnYW1tYRgDIAEoARIMCgR2ZWdhGAQgASgBEgsKA3JobxgFIAEoARIN",
-            "CgV0aGV0YRgGIAEoARIOCgZkaXZyaG8YByABKAFCHaoCGkNhbGNFbmdpbmVT",
-            "ZXJ2aWNlLk1lc3NhZ2VzYgZwcm90bzM="));
+            "ZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASHgoWc3BvdF9t",
+            "ZXNoX3BhcmFtX3ZlY3RvchgDIAMoARIdChV2b2xfbWVzaF9wYXJhbV92ZWN0",
+            "b3IYBCADKAESHgoWcmF0ZV9tZXNoX3BhcmFtX3ZlY3RvchgFIAMoARInChBQ",
+            "YXJhbWV0ZXJTZXRMaXN0GAYgAygLMg0uUGFyYW1ldGVyU2V0Io0CCgxQYXJh",
+            "bWV0ZXJTZXQSCgoCaWQYASABKAUSDwoHc3BvdF9weBgCIAEoARIWCg52b2xh",
+            "dGlsaXR5X3BjdBgDIAEoARIaChJyaXNrX2ZyZWVfcmF0ZV9wY3QYBCABKAES",
+            "GgoSZGl2aWRlbmRfeWllbGRfcGN0GAUgASgBEhkKEW1hdHVyaXR5X3RpbWVf",
+            "eXJzGAYgASgBEhQKDHN0cmlrZV9wcmljZRgHIAEoARIvChRDYWxsVmFsdWF0",
+            "aW9uUmVzdWx0cxgIIAEoCzIRLlZhbHVhdGlvblJlc3VsdHMSLgoTUHV0VmFs",
+            "dWF0aW9uUmVzdWx0cxgJIAEoCzIRLlZhbHVhdGlvblJlc3VsdHMigAEKEFZh",
+            "bHVhdGlvblJlc3VsdHMSFAoMb3B0aW9uX3ZhbHVlGAEgASgBEg0KBWRlbHRh",
+            "GAIgASgBEg0KBWdhbW1hGAMgASgBEgwKBHZlZ2EYBCABKAESCwoDcmhvGAUg",
+            "ASgBEg0KBXRoZXRhGAYgASgBEg4KBmRpdnJobxgHIAEoAUIdqgIaQ2FsY0Vu",
+            "Z2luZVNlcnZpY2UuTWVzc2FnZXNiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::CalcEngineService.Messages.ParameterSetMeshUpdateMessage), global::CalcEngineService.Messages.ParameterSetMeshUpdateMessage.Parser, new[]{ "Underlier", "PriceTime", "ParameterSetList" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::CalcEngineService.Messages.ParameterSetMeshUpdateMessage), global::CalcEngineService.Messages.ParameterSetMeshUpdateMessage.Parser, new[]{ "Underlier", "PriceTime", "SpotMeshParamVector", "VolMeshParamVector", "RateMeshParamVector", "ParameterSetList" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::CalcEngineService.Messages.ParameterSet), global::CalcEngineService.Messages.ParameterSet.Parser, new[]{ "Id", "SpotPx", "VolatilityPct", "RiskFreeRatePct", "DividendYieldPct", "MaturityTimeYrs", "StrikePrice", "CallValuationResults", "PutValuationResults" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::CalcEngineService.Messages.ValuationResults), global::CalcEngineService.Messages.ValuationResults.Parser, new[]{ "OptionValue", "Delta", "Gamma", "Vega", "Rho", "Theta", "Divrho" }, null, null, null, null)
           }));
@@ -87,6 +89,9 @@ namespace CalcEngineService.Messages {
     public ParameterSetMeshUpdateMessage(ParameterSetMeshUpdateMessage other) : this() {
       underlier_ = other.underlier_;
       priceTime_ = other.priceTime_ != null ? other.priceTime_.Clone() : null;
+      spotMeshParamVector_ = other.spotMeshParamVector_.Clone();
+      volMeshParamVector_ = other.volMeshParamVector_.Clone();
+      rateMeshParamVector_ = other.rateMeshParamVector_.Clone();
       parameterSetList_ = other.parameterSetList_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -121,10 +126,43 @@ namespace CalcEngineService.Messages {
       }
     }
 
+    /// <summary>Field number for the "spot_mesh_param_vector" field.</summary>
+    public const int SpotMeshParamVectorFieldNumber = 3;
+    private static readonly pb::FieldCodec<double> _repeated_spotMeshParamVector_codec
+        = pb::FieldCodec.ForDouble(26);
+    private readonly pbc::RepeatedField<double> spotMeshParamVector_ = new pbc::RepeatedField<double>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<double> SpotMeshParamVector {
+      get { return spotMeshParamVector_; }
+    }
+
+    /// <summary>Field number for the "vol_mesh_param_vector" field.</summary>
+    public const int VolMeshParamVectorFieldNumber = 4;
+    private static readonly pb::FieldCodec<double> _repeated_volMeshParamVector_codec
+        = pb::FieldCodec.ForDouble(34);
+    private readonly pbc::RepeatedField<double> volMeshParamVector_ = new pbc::RepeatedField<double>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<double> VolMeshParamVector {
+      get { return volMeshParamVector_; }
+    }
+
+    /// <summary>Field number for the "rate_mesh_param_vector" field.</summary>
+    public const int RateMeshParamVectorFieldNumber = 5;
+    private static readonly pb::FieldCodec<double> _repeated_rateMeshParamVector_codec
+        = pb::FieldCodec.ForDouble(42);
+    private readonly pbc::RepeatedField<double> rateMeshParamVector_ = new pbc::RepeatedField<double>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<double> RateMeshParamVector {
+      get { return rateMeshParamVector_; }
+    }
+
     /// <summary>Field number for the "ParameterSetList" field.</summary>
-    public const int ParameterSetListFieldNumber = 3;
+    public const int ParameterSetListFieldNumber = 6;
     private static readonly pb::FieldCodec<global::CalcEngineService.Messages.ParameterSet> _repeated_parameterSetList_codec
-        = pb::FieldCodec.ForMessage(26, global::CalcEngineService.Messages.ParameterSet.Parser);
+        = pb::FieldCodec.ForMessage(50, global::CalcEngineService.Messages.ParameterSet.Parser);
     private readonly pbc::RepeatedField<global::CalcEngineService.Messages.ParameterSet> parameterSetList_ = new pbc::RepeatedField<global::CalcEngineService.Messages.ParameterSet>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -149,6 +187,9 @@ namespace CalcEngineService.Messages {
       }
       if (Underlier != other.Underlier) return false;
       if (!object.Equals(PriceTime, other.PriceTime)) return false;
+      if(!spotMeshParamVector_.Equals(other.spotMeshParamVector_)) return false;
+      if(!volMeshParamVector_.Equals(other.volMeshParamVector_)) return false;
+      if(!rateMeshParamVector_.Equals(other.rateMeshParamVector_)) return false;
       if(!parameterSetList_.Equals(other.parameterSetList_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -159,6 +200,9 @@ namespace CalcEngineService.Messages {
       int hash = 1;
       if (Underlier.Length != 0) hash ^= Underlier.GetHashCode();
       if (priceTime_ != null) hash ^= PriceTime.GetHashCode();
+      hash ^= spotMeshParamVector_.GetHashCode();
+      hash ^= volMeshParamVector_.GetHashCode();
+      hash ^= rateMeshParamVector_.GetHashCode();
       hash ^= parameterSetList_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -186,6 +230,9 @@ namespace CalcEngineService.Messages {
         output.WriteRawTag(18);
         output.WriteMessage(PriceTime);
       }
+      spotMeshParamVector_.WriteTo(output, _repeated_spotMeshParamVector_codec);
+      volMeshParamVector_.WriteTo(output, _repeated_volMeshParamVector_codec);
+      rateMeshParamVector_.WriteTo(output, _repeated_rateMeshParamVector_codec);
       parameterSetList_.WriteTo(output, _repeated_parameterSetList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -205,6 +252,9 @@ namespace CalcEngineService.Messages {
         output.WriteRawTag(18);
         output.WriteMessage(PriceTime);
       }
+      spotMeshParamVector_.WriteTo(ref output, _repeated_spotMeshParamVector_codec);
+      volMeshParamVector_.WriteTo(ref output, _repeated_volMeshParamVector_codec);
+      rateMeshParamVector_.WriteTo(ref output, _repeated_rateMeshParamVector_codec);
       parameterSetList_.WriteTo(ref output, _repeated_parameterSetList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -222,6 +272,9 @@ namespace CalcEngineService.Messages {
       if (priceTime_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(PriceTime);
       }
+      size += spotMeshParamVector_.CalculateSize(_repeated_spotMeshParamVector_codec);
+      size += volMeshParamVector_.CalculateSize(_repeated_volMeshParamVector_codec);
+      size += rateMeshParamVector_.CalculateSize(_repeated_rateMeshParamVector_codec);
       size += parameterSetList_.CalculateSize(_repeated_parameterSetList_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -244,6 +297,9 @@ namespace CalcEngineService.Messages {
         }
         PriceTime.MergeFrom(other.PriceTime);
       }
+      spotMeshParamVector_.Add(other.spotMeshParamVector_);
+      volMeshParamVector_.Add(other.volMeshParamVector_);
+      rateMeshParamVector_.Add(other.rateMeshParamVector_);
       parameterSetList_.Add(other.parameterSetList_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -271,7 +327,22 @@ namespace CalcEngineService.Messages {
             input.ReadMessage(PriceTime);
             break;
           }
-          case 26: {
+          case 26:
+          case 25: {
+            spotMeshParamVector_.AddEntriesFrom(input, _repeated_spotMeshParamVector_codec);
+            break;
+          }
+          case 34:
+          case 33: {
+            volMeshParamVector_.AddEntriesFrom(input, _repeated_volMeshParamVector_codec);
+            break;
+          }
+          case 42:
+          case 41: {
+            rateMeshParamVector_.AddEntriesFrom(input, _repeated_rateMeshParamVector_codec);
+            break;
+          }
+          case 50: {
             parameterSetList_.AddEntriesFrom(input, _repeated_parameterSetList_codec);
             break;
           }
@@ -301,7 +372,22 @@ namespace CalcEngineService.Messages {
             input.ReadMessage(PriceTime);
             break;
           }
-          case 26: {
+          case 26:
+          case 25: {
+            spotMeshParamVector_.AddEntriesFrom(ref input, _repeated_spotMeshParamVector_codec);
+            break;
+          }
+          case 34:
+          case 33: {
+            volMeshParamVector_.AddEntriesFrom(ref input, _repeated_volMeshParamVector_codec);
+            break;
+          }
+          case 42:
+          case 41: {
+            rateMeshParamVector_.AddEntriesFrom(ref input, _repeated_rateMeshParamVector_codec);
+            break;
+          }
+          case 50: {
             parameterSetList_.AddEntriesFrom(ref input, _repeated_parameterSetList_codec);
             break;
           }

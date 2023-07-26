@@ -26,7 +26,7 @@ public class QuoteEngineServiceAggregateHandler: IServiceHandler
     {
         _aggregateLogger.LogInformation("Starting aggregate handler...");
 
-        var mddsTask = Task.Run(() => _mddsServiceHandler.StartAsync(stoppingToken));
+        var mddsTask = Task.Run(() => _mddsServiceHandler.StartAsync(stoppingToken), stoppingToken);
 
         var subscribersList = new List<Task>
         {
@@ -38,7 +38,7 @@ public class QuoteEngineServiceAggregateHandler: IServiceHandler
             subscribersList.Add(new QuoteEngineServiceCalcEngineHandler(_underlyingLogger, subscriberCfg).StartAsync(stoppingToken));
         }
 
-        Task.WaitAll(subscribersList.ToArray());
+        Task.WaitAll(subscribersList.ToArray(), stoppingToken);
         return Task.CompletedTask;
     }
 }
