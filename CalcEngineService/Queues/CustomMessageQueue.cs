@@ -1,12 +1,10 @@
-﻿using MarketDataDistributionService.Messages;
-
-namespace CalcEngineService.Queues;
+﻿namespace CalcEngineService.Queues;
 
 public class CustomMessageQueue<T> where T: class
 {
     private object _syncLock = new();
-    private Queue<string> _underliersQueue = new(100000);
-    private Dictionary<string, T> _underlierAndMessageDict = new();
+    private readonly Queue<string> _underliersQueue = new(100000);
+    private readonly Dictionary<string, T> _underlierAndMessageDict = new();
 
     public void Enqueue(string key, T message)
     {

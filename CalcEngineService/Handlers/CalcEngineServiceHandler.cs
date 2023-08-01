@@ -20,13 +20,13 @@ public class CalcEngineServiceHandler : IServiceHandler
     private readonly List<MeshConfigSetConfiguration> _meshConfigSetConfiguration;
     private readonly IParameterSetUpdateCache _parameterSetUpdateCache;
     private readonly IMeshConfigSetCache _meshConfigSetCache;
-    private Channel<ParameterSetUpdateMessage> _inboundChannel;
-    private Channel<ParameterSetMeshUpdateMessage> _outboundChannel;
+    private readonly Channel<ParameterSetUpdateMessage> _inboundChannel;
+    private readonly Channel<ParameterSetMeshUpdateMessage> _outboundChannel;
     private readonly CustomMessageQueue<ParameterSetUpdateMessage> _customMessageQueue = new();
     private readonly Stopwatch _stopwatch = new();
 
 
-    public CalcEngineServiceHandler(ILogger<CalcEngineServiceHandler> logger, 
+    public CalcEngineServiceHandler(ILogger<CalcEngineServiceHandler> logger,
         IOptions<AppParamsConfiguration> appParamsConfigurationOption,
         IOptions<List<MeshConfigSetConfiguration>> meshConfigSetConfiguration,
         IParameterSetUpdateCache parameterSetUpdateCache,
@@ -52,24 +52,24 @@ public class CalcEngineServiceHandler : IServiceHandler
 
         using var runtime = new NetMQRuntime();
         runtime.Run(stoppingToken,
-            SubscriberAsync(stoppingToken,
-            _appParamsConfiguration.ZeroMqReceiveHost,
+            SubscriberAsync(_appParamsConfiguration.ZeroMqReceiveHost,
             _appParamsConfiguration.ZeroMqReceivePort,
             _appParamsConfiguration.ZeroMqReceiveTopic,
             _appParamsConfiguration.ReceiveMessageCapacity,
-            WriteToInbound),
-            PublisherAsync(stoppingToken,
-            _appParamsConfiguration.ZeroMqSendHost,
+            WriteToInbound,
+            stoppingToken),
+            PublisherAsync(_appParamsConfiguration.ZeroMqSendHost,
             _appParamsConfiguration.ZeroMqSendPort,
             _appParamsConfiguration.ZeroMqSendTopic,
             _appParamsConfiguration.SendMessageCapacity,
-            ReadFromOutbound));
+            ReadFromOutbound,
+            stoppingToken));
 
         await Task.WhenAll(inboundChannelProcessor, paramSetProcessor);
     }
 
     #region zeromq calls - abstract this out later
-    private async Task SubscriberAsync(CancellationToken stoppingToken, string host, int port, string topic, int maxCapacity, Action<byte[]> saveToChannel)
+    private async Task SubscriberAsync(string host, int port, string topic, int maxCapacity, Action<byte[]> saveToChannel, CancellationToken stoppingToken)
     {
         _logger.LogInformation("Subscriber binding on {Host}:{Port}, Topic: {Topic} ", host, port, topic);
 
@@ -92,8 +92,8 @@ public class CalcEngineServiceHandler : IServiceHandler
         }
     }
 
-    private async Task PublisherAsync(CancellationToken stoppingToken, string host, int port, string topic, int maxCapacity,
-        Func<CancellationToken, Task<ParameterSetMeshUpdateMessage>> readFromChannel)
+    private async Task PublisherAsync(string host, int port, string topic, int maxCapacity, Func<CancellationToken, Task<ParameterSetMeshUpdateMessage>> readFromChannel,
+        CancellationToken stoppingToken)
     {
         _logger.LogInformation("Publisher binding on {Host}:{Port}, Topic: {Topic} ", host, port, topic);
 
@@ -122,7 +122,6 @@ public class CalcEngineServiceHandler : IServiceHandler
         return await _outboundChannel.Reader.ReadAsync(stoppingToken);
     }
 
-
     private async void ProcessInboundChannelMessages(CancellationToken stoppingToken)
     {
         //pick the latest message
@@ -132,7 +131,6 @@ public class CalcEngineServiceHandler : IServiceHandler
             _customMessageQueue.Enqueue(parameterSetUpdateMessage.Underlier, parameterSetUpdateMessage);
         }
     }
-
 
     private async void ProcessParameterSetUpdateMessage(CancellationToken stoppingToken)
     {
@@ -155,7 +153,7 @@ public class CalcEngineServiceHandler : IServiceHandler
             _logger.LogInformation("Processed: {Underlier}, Items: {Count}, TimeTaken: {TimeTaken} ms", parameterSetMeshUpdateMessage.Underlier,
                 parameterSetMeshUpdateMessage.ParameterSetList.Count, _stopwatch.ElapsedTicks / (double)Stopwatch.Frequency * 1000);
 
-            await _outboundChannel.Writer.WriteAsync(parameterSetMeshUpdateMessage);
+            await _outboundChannel.Writer.WriteAsync(parameterSetMeshUpdateMessage, stoppingToken);
         }
     }
 
@@ -266,10 +264,7 @@ public class CalcEngineServiceHandler : IServiceHandler
         }
     }
 
-    private void PopulateOptionPrices(ParameterSetMeshUpdateMessage result)
-    {
-        Parallel.ForEach(result.ParameterSetList, OptionPriceCalculator.CalculateOptionPriceAndGreeks);
-    }
+    private static void PopulateOptionPrices(ParameterSetMeshUpdateMessage result) => Parallel.ForEach(result.ParameterSetList, OptionPriceCalculator.CalculateOptionPriceAndGreeks);
 
     private void BuildInitialParameterMeshConfigSet()
     {

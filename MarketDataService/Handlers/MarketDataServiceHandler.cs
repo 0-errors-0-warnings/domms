@@ -47,12 +47,12 @@ public class MarketDataServiceHandler : IServiceHandler
         while(!stoppingToken.IsCancellationRequested)
         {
             var marketDataMessage = GetMarketDataMessage();
-            _logger.LogInformation("sending: {Underlier}, Price:{PriceTime} ", marketDataMessage.Underlier, marketDataMessage.PriceTime);
+            _logger.LogInformation("sending: {Underlier}, PriceTime:{PriceTime}", marketDataMessage.Underlier, marketDataMessage.PriceTime);
 
             pubSocket.SendMoreFrame(_appParamsConfiguration.ZeroMqSendTopic).SendFrame(marketDataMessage.ToByteArray());
 
             //TODO: Only for testing. Remove later.
-            await Task.Delay(5*1000, stoppingToken);
+            //await Task.Delay(10000, stoppingToken);
         }
 
         await Task.CompletedTask;
