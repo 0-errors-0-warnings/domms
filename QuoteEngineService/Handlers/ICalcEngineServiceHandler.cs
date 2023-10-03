@@ -1,6 +1,6 @@
 ﻿namespace QuoteEngineService.Handlers;
 
-public interface IUnderlyingServiceHandler
+public interface ICalcEngineServiceHandler
 {
     Task StartAsync(CancellationToken stoppingToken);
 }

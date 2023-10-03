@@ -1,9 +1,10 @@
-﻿using CalcEngineService.Messages;
-using MarketDataDistributionService.Messages;
+﻿using MarketDataDistributionService.Messages;
 using Microsoft.Extensions.Options;
 using NetMQ;
 using NetMQ.Sockets;
+using QuoteEngineService.Caches;
 using QuoteEngineService.Configs;
+using QuoteEngineService.Queues;
 using System.Threading.Channels;
 
 namespace QuoteEngineService.Handlers;
@@ -11,42 +12,44 @@ namespace QuoteEngineService.Handlers;
 public class QuoteEngineServiceMddsHandler : IMddsServiceHandler
 {
     private readonly ILogger<QuoteEngineServiceMddsHandler> _logger;
-    private readonly ZeroMqReceiveParamsConfiguration _zeroMqReceiveParamsConfiguration;
-    private Channel<ParameterSetUpdateMessage> _inboundChannel;
-    private List<Task> _processorTaskList;
+    private readonly MddsReceiveParamsConfiguration _mddsReceiveParamsConfiguration;
+    private readonly Channel<ParameterSetUpdateMessage> _inboundChannel;
+    private readonly CustomMessageQueue<ParameterSetUpdateMessage> _customMessageQueue = new();
+
+    private IConfigParameterSetCache _configParameterSetCache;
+
 
     public QuoteEngineServiceMddsHandler(ILogger<QuoteEngineServiceMddsHandler> logger, 
-        IOptions<ZeroMqReceiveParamsConfiguration> zeroMqReceiveParamsConfigurationOption)
+        IOptions<MddsReceiveParamsConfiguration> mddsReceiveParamsConfigurationOption)
     {
         _logger = logger;
-        _zeroMqReceiveParamsConfiguration = zeroMqReceiveParamsConfigurationOption.Value;
-        _inboundChannel = Channel.CreateBounded<ParameterSetUpdateMessage>(_zeroMqReceiveParamsConfiguration.ReceiveMessageCapacity);
-        _processorTaskList = new List<Task>();
+        _mddsReceiveParamsConfiguration = mddsReceiveParamsConfigurationOption.Value;
+        _inboundChannel = Channel.CreateBounded<ParameterSetUpdateMessage>(_mddsReceiveParamsConfiguration.ReceiveMessageCapacity);
     }
 
-    public async Task StartAsync(CancellationToken stoppingToken)
+    public async Task StartAsync(IConfigParameterSetCache configParameterSetCache, CancellationToken stoppingToken)
     {
+        _configParameterSetCache = configParameterSetCache;
+
         // start processor tasks
-        for (int i = 0; i < _zeroMqReceiveParamsConfiguration.NumOfThreads; i++)
-        {
-            _processorTaskList.Add(Task.Run(() => ProcessMddsMessage(stoppingToken), stoppingToken));
-        } 
+        var inboundChannelProcessor = Task.Run(() => ProcessInboundChannelMessages(stoppingToken), stoppingToken);
+        var paramSetProcessor = Task.Run(() => ProcessParameterSetUpdateMessage(stoppingToken), stoppingToken);
 
         using var runtime = new NetMQRuntime();
         runtime.Run(stoppingToken,
-            SubscriberAsync(stoppingToken,
-            _zeroMqReceiveParamsConfiguration.ZeroMqReceiveHost,
-            _zeroMqReceiveParamsConfiguration.ZeroMqReceivePort,
-            _zeroMqReceiveParamsConfiguration.ZeroMqReceiveTopic,
-            _zeroMqReceiveParamsConfiguration.ReceiveMessageCapacity,
-            WriteToInbound));
+            SubscriberAsync(_mddsReceiveParamsConfiguration.ZeroMqReceiveHost,
+            _mddsReceiveParamsConfiguration.ZeroMqReceivePort,
+            _mddsReceiveParamsConfiguration.ZeroMqReceiveTopic,
+            _mddsReceiveParamsConfiguration.ReceiveMessageCapacity,
+            WriteToInbound,
+            stoppingToken));
 
-        await Task.WhenAll(_processorTaskList);
+        await Task.WhenAll(inboundChannelProcessor, paramSetProcessor);
     }
 
     #region zeromq calls - abstract this out later
 
-    private async Task SubscriberAsync(CancellationToken stoppingToken, string host, int port, string topic, int maxCapacity, Action<byte[]> saveToChannel)
+    private async Task SubscriberAsync(string host, int port, string topic, int maxCapacity, Action<byte[]> saveToChannel, CancellationToken stoppingToken)
     {
         _logger.LogInformation("Subscriber binding on {Host}:{Port}, Topic: {Topic} ", host, port, topic);
 
@@ -55,7 +58,6 @@ public class QuoteEngineServiceMddsHandler : IMddsServiceHandler
         subSocket.Connect($"tcp://{host}:{port}");
         subSocket.Subscribe(topic);
 
-        var i = 0;
         while (!stoppingToken.IsCancellationRequested)
         {
             var (_, anotherFrame) = await subSocket.ReceiveFrameStringAsync(stoppingToken);
@@ -65,7 +67,6 @@ public class QuoteEngineServiceMddsHandler : IMddsServiceHandler
             }
             var (bytes, _) = await subSocket.ReceiveFrameBytesAsync(stoppingToken);
             saveToChannel(bytes);
-            //_logger.LogInformation("MessageCount: {i}", ++i);
         }
     }
 
@@ -77,24 +78,30 @@ public class QuoteEngineServiceMddsHandler : IMddsServiceHandler
         await _inboundChannel.Writer.WriteAsync(msg);
     }
 
-    int count = 0;
-    private async void ProcessMddsMessage(CancellationToken stoppingToken)
+    private async void ProcessInboundChannelMessages(CancellationToken stoppingToken)
     {
-        // pick the latest message
+        //pick the latest message
         while (!stoppingToken.IsCancellationRequested)
         {
             var parameterSetUpdateMessage = await _inboundChannel.Reader.ReadAsync(stoppingToken);
-
-            count++;
-
-            if (count % 50000 == 0)
-            {
-                _logger.LogInformation("parameterSetUpdateMessage: {Underlier}, PriceTime: {PriceTime}", parameterSetUpdateMessage.Underlier, parameterSetUpdateMessage.PriceTime);
-            }
-            //TODO: update PS via double buffering
-            //TODO: publish
+            _customMessageQueue.Enqueue(parameterSetUpdateMessage.Underlier, parameterSetUpdateMessage);
         }
     }
 
+    private void ProcessParameterSetUpdateMessage(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var parameterSetUpdateMessage = _customMessageQueue.Dequeue();
 
+            if (parameterSetUpdateMessage == null)
+            {
+                continue;
+            }
+
+            //_logger.LogInformation("MDDS:  {Underlier} ", parameterSetUpdateMessage.Underlier);
+            // Update Parameter Set cache
+            _configParameterSetCache.UpdateConfigSet(parameterSetUpdateMessage);
+        }
+    }
 }

@@ -1,4 +1,7 @@
+using CalcEngineService.Messages;
+using MarketDataDistributionService.Messages;
 using QuoteEngineService;
+using QuoteEngineService.Caches;
 using QuoteEngineService.Configs;
 using QuoteEngineService.Handlers;
 
@@ -12,11 +15,18 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         IConfiguration configuration = hostContext.Configuration;
 
-        services.Configure<ZeroMqReceiveParamsConfiguration>(configuration.GetSection("ZeroMqMddsReceiveParams"));
-        services.Configure<List<ZeroMqReceiveParamsConfiguration>>(configuration.GetSection("ZeroMqCalcEngineReceiveParams"));
+        services.Configure<MddsReceiveParamsConfiguration>(configuration.GetSection("ZeroMqMddsReceiveParams"));
+        services.Configure<List<CalcEngineReceiveParamsConfiguration>>(configuration.GetSection("ZeroMqCalcEngineReceiveParams"));
+        services.Configure<List<AdminParamSetConfiguration>>(configuration.GetSection("AdminParamSetCache"));
 
+        services.AddSingleton<IParameterCache<ParameterSetUpdateMessage>, ParameterCache<ParameterSetUpdateMessage>>();
+        services.AddSingleton<IParameterCache<ParameterSetMeshUpdateMessage>, ParameterCache<ParameterSetMeshUpdateMessage>>();
+
+        services.AddSingleton<IConfigParameterSetCache, ConfigParameterSetCache>();
+        services.AddSingleton<IAdminParameterSetCache, AdminParameterSetCache>();
+
+        services.AddSingleton<IOptionsPricingHandler, OptionsPricingHandler>();
         services.AddSingleton<IMddsServiceHandler, QuoteEngineServiceMddsHandler>();
-        //services.AddSingleton<IUnderlyingServiceHandler, QuoteEngineServiceUnderlyingHandler>();
         services.AddSingleton<IServiceHandler, QuoteEngineServiceAggregateHandler>();
 
         services.AddHostedService<Worker>();

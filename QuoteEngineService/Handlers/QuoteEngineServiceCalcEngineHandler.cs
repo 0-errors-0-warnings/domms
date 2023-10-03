@@ -1,51 +1,54 @@
 ﻿using CalcEngineService.Messages;
 using NetMQ;
 using NetMQ.Sockets;
+using QuoteEngineService.Caches;
 using QuoteEngineService.Configs;
+using QuoteEngineService.Queues;
 using System.Threading.Channels;
 
 namespace QuoteEngineService.Handlers;
 
-public class QuoteEngineServiceCalcEngineHandler : IUnderlyingServiceHandler
+public class QuoteEngineServiceCalcEngineHandler : ICalcEngineServiceHandler
 {
     private readonly ILogger<QuoteEngineServiceCalcEngineHandler> _logger;
-    private readonly ZeroMqReceiveParamsConfiguration _zeroMqReceiveParamsConfiguration;
-    private Channel<ParameterSetMeshUpdateMessage> _inboundChannel;
-    private List<Task> _processorTaskList;
+    private readonly CalcEngineReceiveParamsConfiguration _calcEngineReceiveParamsConfiguration;
+    private readonly IParameterCache<ParameterSetMeshUpdateMessage> _parameterSetMeshUpdateCache;
+    private readonly Channel<ParameterSetMeshUpdateMessage> _inboundChannel;
+    private readonly CustomMessageQueue<ParameterSetMeshUpdateMessage> _customMessageQueue = new();
 
-    public QuoteEngineServiceCalcEngineHandler(ILogger<QuoteEngineServiceCalcEngineHandler> logger, 
-        ZeroMqReceiveParamsConfiguration zeroMqReceiveParamsConfiguration)
+
+    public QuoteEngineServiceCalcEngineHandler(ILogger<QuoteEngineServiceCalcEngineHandler> logger,
+        CalcEngineReceiveParamsConfiguration calcEngineReceiveParamsConfiguration,
+        IParameterCache<ParameterSetMeshUpdateMessage> parameterSetMeshUpdateCache)
     {
         _logger = logger;
-        _zeroMqReceiveParamsConfiguration = zeroMqReceiveParamsConfiguration;
-        _inboundChannel = Channel.CreateBounded<ParameterSetMeshUpdateMessage>(_zeroMqReceiveParamsConfiguration.ReceiveMessageCapacity);
-        _processorTaskList = new List<Task>();
+        _calcEngineReceiveParamsConfiguration = calcEngineReceiveParamsConfiguration;
+        _parameterSetMeshUpdateCache = parameterSetMeshUpdateCache;
+
+        _inboundChannel = Channel.CreateBounded<ParameterSetMeshUpdateMessage>(_calcEngineReceiveParamsConfiguration.ReceiveMessageCapacity);
     }
 
     public async Task StartAsync(CancellationToken stoppingToken)
     {
         // start processor tasks
-        for (int i = 0; i < _zeroMqReceiveParamsConfiguration.NumOfThreads; i++)
-        {
-            _processorTaskList.Add(Task.Run(() => ProcessCalcEngineMessage(stoppingToken), stoppingToken));
-        }
-
+        var inboundChannelProcessor = Task.Run(() => ProcessInboundChannelMessages(stoppingToken), stoppingToken);
+        var paramSetMeshUpdateProcessor = Task.Run(() => ProcessParameterMeshSetUpdateMessage(stoppingToken), stoppingToken);
 
         using var runtime = new NetMQRuntime();
         runtime.Run(stoppingToken,
-            SubscriberAsync(stoppingToken,
-            _zeroMqReceiveParamsConfiguration.ZeroMqReceiveHost,
-            _zeroMqReceiveParamsConfiguration.ZeroMqReceivePort,
-            _zeroMqReceiveParamsConfiguration.ZeroMqReceiveTopic,
-            _zeroMqReceiveParamsConfiguration.ReceiveMessageCapacity,
-            WriteToInbound));
+            SubscriberAsync(_calcEngineReceiveParamsConfiguration.ZeroMqReceiveHost,
+            _calcEngineReceiveParamsConfiguration.ZeroMqReceivePort,
+            _calcEngineReceiveParamsConfiguration.ZeroMqReceiveTopic,
+            _calcEngineReceiveParamsConfiguration.ReceiveMessageCapacity,
+            WriteToInbound,
+            stoppingToken));
 
-        //await Task.WhenAll(_processorTaskList);
+        await Task.WhenAll(inboundChannelProcessor, paramSetMeshUpdateProcessor);
     }
 
     #region zeromq calls - abstract this out later
 
-    private async Task SubscriberAsync(CancellationToken stoppingToken, string host, int port, string topic, int maxCapacity, Action<byte[]> saveToChannel)
+    private async Task SubscriberAsync(string host, int port, string topic, int maxCapacity, Action<byte[]> saveToChannel, CancellationToken stoppingToken)
     {
         _logger.LogInformation("Subscriber binding on {Host}:{Port}, Topic: {Topic} ", host, port, topic);
 
@@ -57,7 +60,6 @@ public class QuoteEngineServiceCalcEngineHandler : IUnderlyingServiceHandler
         //var i = 0;
         while (!stoppingToken.IsCancellationRequested)
         {
-            //_logger.LogInformation("MessageCount: {i}", ++i);
             var (_, anotherFrame) = await subSocket.ReceiveFrameStringAsync(stoppingToken);
             if (!anotherFrame)
             {
@@ -65,6 +67,7 @@ public class QuoteEngineServiceCalcEngineHandler : IUnderlyingServiceHandler
             }
             var (bytes, _) = await subSocket.ReceiveFrameBytesAsync(stoppingToken);
             saveToChannel(bytes);
+            //_logger.LogInformation("MessageCount: {i}", ++i);
         }
     }
 
@@ -76,28 +79,29 @@ public class QuoteEngineServiceCalcEngineHandler : IUnderlyingServiceHandler
         await _inboundChannel.Writer.WriteAsync(msg);
     }
 
-
-    int count = 0;
-    private async void ProcessCalcEngineMessage(CancellationToken stoppingToken)
+    private async void ProcessInboundChannelMessages(CancellationToken stoppingToken)
     {
-        // pick the latest message
+        //pick the latest message
         while (!stoppingToken.IsCancellationRequested)
         {
             var parameterSetMeshUpdateMessage = await _inboundChannel.Reader.ReadAsync(stoppingToken);
-
-            count++;
-
-            _logger.LogInformation("parameterSetMeshUpdateMessage: {Underlier}, PriceTime: {PriceTime}, Items: {Count}",
-                parameterSetMeshUpdateMessage.Underlier, parameterSetMeshUpdateMessage.PriceTime, parameterSetMeshUpdateMessage.ParameterSetList.Count);
-            if (count % 50000 == 0)
-            {
-                _logger.LogInformation("parameterSetMeshUpdateMessage: {Underlier}, PriceTime: {PriceTime}, Items: {Count}",
-                    parameterSetMeshUpdateMessage.Underlier, parameterSetMeshUpdateMessage.PriceTime, parameterSetMeshUpdateMessage.ParameterSetList.Count);
-            }
-            //TODO: update PS via double buffering
-            //TODO: publish
+            _customMessageQueue.Enqueue(parameterSetMeshUpdateMessage.Underlier, parameterSetMeshUpdateMessage);
         }
     }
 
+    private void ProcessParameterMeshSetUpdateMessage(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            var parameterSetMeshUpdateMessage = _customMessageQueue.Dequeue();
 
+            if (parameterSetMeshUpdateMessage == null)
+            {
+                continue;
+            }
+
+            // Update Parameter Set cache
+            _parameterSetMeshUpdateCache.Update(parameterSetMeshUpdateMessage);
+        }
+    }
 }
